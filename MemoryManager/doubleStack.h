@@ -8,13 +8,13 @@ public:
 	doubleStack();
 	doubleStack(char * startLocation, unsigned const int numberOfBytes);
 	~doubleStack();
-	template<class T>
+	template<typename T>
 	T* allocateFront(T objectRequired);
-	template<class T>
+	template<typename T>
 	bool deallocateFront(T *location);
-	template<class T>
+	template<typename T>
 	T* allocateBack(T objectRequired);
-	template<class T>
+	template<typename T>
 	bool deallocateBack(T *location);
 	int memoryRemaining();
 private:
@@ -27,7 +27,7 @@ private:
 	//to deallocate
 	std::vector<void*> allocationLocations;
 };
-template<class T>
+template<typename T>
 /// <summary>
 /// Method To Allocate memory for a given class
 /// we need to also keep track of each allocation
@@ -51,7 +51,7 @@ inline	T * doubleStack::allocateFront(T objectRequired)
 
 }
 
-template<class T>
+template<typename T>
 /// <summary>
 /// Method to deallocate from the front of the stac
 /// </summary>

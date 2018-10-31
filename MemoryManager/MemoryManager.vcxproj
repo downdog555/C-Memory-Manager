@@ -132,10 +132,12 @@
   <ItemGroup>
     <ClCompile Include="doubleStack.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="pool.cpp" />
     <ClCompile Include="stack.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="doubleStack.h" />
+    <ClInclude Include="pool.h" />
     <ClInclude Include="stack.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

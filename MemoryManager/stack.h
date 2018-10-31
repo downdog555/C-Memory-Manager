@@ -8,9 +8,9 @@
 		stack();
 		stack(char * startLocation, unsigned const int numberOfBytes);
 		~stack();
-		template<class T>
+		template<typename T>
 		T* allocate(T objectRequired);
-		template<class T>
+		template<typename T>
 		bool deallocate(T *location);
 		int memoryRemaining();
 	private:
@@ -22,7 +22,7 @@
 		//to deallocate
 		std::vector<void*> allocationLocations;
 	};
-	template<class T>
+	template<typename T>
 	/// <summary>
 	/// Method To Allocate memory for a given class
 	/// we need to also keep track of each allocation
@@ -46,7 +46,7 @@
 
 	}
 
-	template<class T>
+	template<typename T>
 	inline bool stack::deallocate(T *location)
 	{
 		
