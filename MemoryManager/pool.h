@@ -13,11 +13,11 @@ struct poolMapEntry
 
 };
 
-class pool
+class Pool
 {
 public:
-	pool(char* start, int numberOfBytes, int sizeOfBlocks);
-	~pool();
+	Pool(char* start, int numberOfBytes, int sizeOfBlocks);
+	~Pool();
 	template<typename T>
 	T* allocate(T objectRequired);
 	template<typename T>
@@ -39,7 +39,7 @@ private:
 };
 
 template<typename T>
-inline T * pool::allocate(T objectRequired)
+inline T * Pool::allocate(T objectRequired)
 {
 	int numOfBlocksReq;
 	//since we have size of T we knwo how many blocks are required

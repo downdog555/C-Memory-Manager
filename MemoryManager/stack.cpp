@@ -1,12 +1,10 @@
 #include "stack.h"
-
-
 /// <summary>
 /// Constructor that initilises the stack.
 /// </summary>
 /// <param name="numberOfBytes"></param>
 /// <param name="startLocation"></param>
-stack::stack(char * startLocation, unsigned const int numberOfBytes)
+Stack::Stack(char * startLocation, unsigned const int numberOfBytes)
 {
 	m_start = startLocation;
 	m_current = startLocation;
@@ -14,11 +12,11 @@ stack::stack(char * startLocation, unsigned const int numberOfBytes)
 	m_sizeOfStack = numberOfBytes;
 }
 
-stack::~stack()
+Stack::~Stack()
 {
 }
 
-int stack::memoryRemaining()
+int Stack::memoryRemaining()
 {
 
 	int used = m_current - m_start;

@@ -4,12 +4,12 @@
 /// <summary>
 /// class representing a double ended stack
 /// </summary>
-class doubleStack
+class DoubleStack
 {
 
 public:
-	doubleStack(char * startLocation, unsigned const int numberOfBytes);
-	~doubleStack();
+	DoubleStack(char * startLocation, unsigned const int numberOfBytes);
+	~DoubleStack();
 	template<typename T>
 	T* allocateFront(T objectRequired);
 	template<typename T>
@@ -36,7 +36,7 @@ template<typename T>
 /// </summary>
 /// <param name="objectRequired">The Object To Allocate</param>
 /// <returns>A pointer to the object</returns>
-inline	T * doubleStack::allocateFront(T objectRequired)
+inline	T * DoubleStack::allocateFront(T objectRequired)
 {
 	std::cout << sizeof(T) << std::endl;
 
@@ -59,7 +59,7 @@ template<typename T>
 /// </summary>
 /// <param name="location">the pointer to the object to remove</param>
 /// <returns>succes or failure</returns>
-inline bool doubleStack::deallocateFront(T *location)
+inline bool DoubleStack::deallocateFront(T *location)
 {
 
 	if ((char*)location > m_currentFront)

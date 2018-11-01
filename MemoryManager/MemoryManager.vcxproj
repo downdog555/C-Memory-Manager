@@ -132,12 +132,18 @@
   <ItemGroup>
     <ClCompile Include="doubleStack.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="MemoryManager.cpp" />
+    <ClCompile Include="PointerCounter.cpp" />
     <ClCompile Include="pool.cpp" />
+    <ClCompile Include="SmartPointer.cpp" />
     <ClCompile Include="stack.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="doubleStack.h" />
+    <ClInclude Include="MemoryManager.h" />
+    <ClInclude Include="PointerCounter.h" />
     <ClInclude Include="pool.h" />
+    <ClInclude Include="SmartPointer.h" />
     <ClInclude Include="stack.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

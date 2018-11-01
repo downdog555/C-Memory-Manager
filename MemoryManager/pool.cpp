@@ -7,7 +7,7 @@
 /// <param name="start">char pointer to the section of memeory reserved by the main memeory manager class</param>
 /// <param name="numberOfBytes">the size of the pool required in bytes</param>
 /// <param name="sizeOfBlocks">the size of each block in the pool</param>
-pool::pool(char * start, int numberOfBytes, int sizeOfBlocks)
+Pool::Pool(char * start, int numberOfBytes, int sizeOfBlocks)
 {
 	m_start = start;
 	m_end = start + numberOfBytes;
@@ -23,14 +23,14 @@ pool::pool(char * start, int numberOfBytes, int sizeOfBlocks)
 	}
 }
 
-pool::~pool()
+Pool::~Pool()
 {
 }
 /// <summary>
 /// gets the amount of memeory in bytes
 /// </summary>
 /// <returns>the number of bytes remaining</returns>
-int pool::memoryRemaining()
+int Pool::memoryRemaining()
 {
 	return (m_blocksRemaining * m_blockSize);
 }
@@ -38,7 +38,7 @@ int pool::memoryRemaining()
 /// gets the number of blocks remaining
 /// </summary>
 /// <returns>number of blocks remaining</returns>
-int pool::blocksRemaining()
+int Pool::blocksRemaining()
 {
 	return m_blocksRemaining;
 }

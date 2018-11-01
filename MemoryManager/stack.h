@@ -4,12 +4,12 @@
 /// <summary>
 /// class representing a stack, for any object requried
 /// </summary>
-	class stack
+	class Stack
 	{
 	
 	public:
-		stack(char * startLocation, unsigned const int numberOfBytes);
-		~stack();
+		Stack(char * startLocation, unsigned const int numberOfBytes);
+		~Stack();
 		template<typename T>
 		T* allocate(T objectRequired);
 		template<typename T>
@@ -31,7 +31,7 @@
 	/// </summary>
 	/// <param name="objectRequired">The Object To Allocate</param>
 	/// <returns>A pointer to the object</returns>
-	inline	T * stack::allocate(T objectRequired)
+	inline	T * Stack::allocate(T objectRequired)
 	{
 		std::cout << sizeof(T) << std::endl;
 
@@ -54,7 +54,7 @@
 	/// </summary>
 	/// <param name="location">the pointer to the objec to remove</param>
 	/// <returns>success or faliure</returns>
-	inline bool stack::deallocate(T *location)
+	inline bool Stack::deallocate(T *location)
 	{
 		
 		if ((char*)location > m_current)
