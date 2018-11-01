@@ -1,8 +1,6 @@
 #include "stack.h"
 
-stack::stack()
-{
-}
+
 /// <summary>
 /// Constructor that initilises the stack.
 /// </summary>

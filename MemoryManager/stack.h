@@ -1,11 +1,13 @@
 #pragma once
 #include <vector>
 #include <iostream>
+/// <summary>
+/// class representing a stack, for any object requried
+/// </summary>
 	class stack
 	{
 	
 	public:
-		stack();
 		stack(char * startLocation, unsigned const int numberOfBytes);
 		~stack();
 		template<typename T>
@@ -47,6 +49,11 @@
 	}
 
 	template<typename T>
+	/// <summary>
+	/// function to deallocate the object from the stack with a given pointer
+	/// </summary>
+	/// <param name="location">the pointer to the objec to remove</param>
+	/// <returns>success or faliure</returns>
 	inline bool stack::deallocate(T *location)
 	{
 		

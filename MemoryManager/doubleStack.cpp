@@ -1,11 +1,10 @@
 #include "doubleStack.h"
-
-
-
-doubleStack::doubleStack()
-{
-}
-
+/// <summary>
+/// main constructor
+/// initialises the required counters
+/// </summary>
+/// <param name="startLocation">char pointer to the start of the block of reserved memeory</param>
+/// <param name="numberOfBytes">the number of bytes allocated for the stack</param>
 doubleStack::doubleStack(char * startLocation, unsigned const int numberOfBytes)
 {
 	m_start = startLocation;
@@ -19,7 +18,10 @@ doubleStack::doubleStack(char * startLocation, unsigned const int numberOfBytes)
 doubleStack::~doubleStack()
 {
 }
-
+/// <summary>
+/// function to calculate the amount of memeory remaing in bytes
+/// </summary>
+/// <returns>the number of bytes remaining in the stack</returns>
 int doubleStack::memoryRemaining()
 {
 	int usedFront = m_currentFront - m_start;

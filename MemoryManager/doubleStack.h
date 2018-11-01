@@ -1,11 +1,13 @@
 #pragma once
 #include <vector>
 #include <iostream>
+/// <summary>
+/// class representing a double ended stack
+/// </summary>
 class doubleStack
 {
 
 public:
-	doubleStack();
 	doubleStack(char * startLocation, unsigned const int numberOfBytes);
 	~doubleStack();
 	template<typename T>
@@ -29,7 +31,7 @@ private:
 };
 template<typename T>
 /// <summary>
-/// Method To Allocate memory for a given class
+/// Method To Allocate memory for a given class to the front 
 /// we need to also keep track of each allocation
 /// </summary>
 /// <param name="objectRequired">The Object To Allocate</param>
@@ -53,10 +55,10 @@ inline	T * doubleStack::allocateFront(T objectRequired)
 
 template<typename T>
 /// <summary>
-/// Method to deallocate from the front of the stac
+/// Method to deallocate from the front of the stack from the front section
 /// </summary>
 /// <param name="location">the pointer to the object to remove</param>
-/// <returns></returns>
+/// <returns>succes or failure</returns>
 inline bool doubleStack::deallocateFront(T *location)
 {
 
@@ -85,6 +87,11 @@ inline bool doubleStack::deallocateFront(T *location)
 }
 
 template<class T>
+/// <summary>
+/// function to allocate to the back of the stack.
+/// </summary>
+/// <param name="objectRequired">the object to be instanciated</param>
+/// <returns>a pointer to the new object</returns>
 inline T * doubleStack::allocateBack(T objectRequired)
 {
 

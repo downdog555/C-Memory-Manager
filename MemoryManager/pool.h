@@ -2,10 +2,13 @@
 #include <vector>
 #include <iostream>
 template<typename T>
+/// <summary>
+/// struct representing an entry for the pool so we can reallocate
+/// </summary>
 struct poolMapEntry 
 {
-	T * userPointer;
-	T** actualPointer;
+	T ** userPointer;
+	T* actualPointer;
 	int numberOfBlocks;
 
 };
@@ -120,9 +123,9 @@ inline T * pool::allocate(T objectRequired)
 		T *obj = new(start) T();
 		temp.actualPointer = obj;
 		temp.numberOfBlocks = numOfBlocksReq;
-		temp.userPointer = T * * p = &obj;
+		temp.userPointer = T ** p = &obj;
 		m_locationMap.pushBack(temp);
-	
+		return temp.userPointer;
 
 		
 
