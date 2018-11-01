@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <iostream>
+#include <tuple>
 #include "SmartPointer.h"
 #include "MemoryManager.h"
 
@@ -12,7 +13,7 @@ public:
 	template<typename T>
 	SmartPointer<T> allocate(T objectRequired);
 	template<typename T>
-	bool deallocate(SmartPointer<T> pointer);
+	bool deallocate(SmartPointer<T>* pointer);
 	int memoryRemaining();
 	int blocksRemaining();
 private:
@@ -25,6 +26,7 @@ private:
 	bool m_defragmenting;
 	//bool in pair is false for in use, true for free
 	std::vector<std::pair<char*, bool>> m_rawPool;
+	//char pointer is start, int is number of required blocks second int is block index
 	template<typename T>
 	std::vector<SmartPointer<T>> m_locationMap;
 	void defragment();
@@ -113,8 +115,8 @@ inline SmartPointer<T> Pool::allocate(T objectRequired)
 		
 		
 		T *obj = new(start) T();
-		SmartPointer<T> temp(obj, m_manager, 2);
-		
+		SmartPointer<T> temp(obj, m_manager, 2, startBlock);
+	
 		m_locationMap.pushBack(temp);
 		return temp;
 
@@ -124,23 +126,38 @@ inline SmartPointer<T> Pool::allocate(T objectRequired)
 
 	return NULL;
 }
-
 template<typename T>
-inline bool Pool::deallocate(SmartPointer<T> pointer)
+inline bool Pool::deallocate(SmartPointer<T>* pointer)
 {
-	//we have a smart pointer so we can dereference that to get actual location
-	//then we can deallocate that
-	int numOfBlocksReq;
+	//we have need to loop through pool map and find the matching char pointer...
+	//remove from the list and then deallocate
+	//using thesecond value as the number of blocks
+	int numberOfBlocks;
 	//since we have size of T we knwo how many blocks are required
 	if (sizeof(T) % m_blockSize > 0)
 	{
-		numOfBlocksReq = sizeof(T) / m_blockSize + 1;
+		numberOfBlocks = sizeof(T) / m_blockSize + 1;
 	}
 	else
 	{
-		numOfBlocksReq = sizeof(T) / m_blockSize;
+		numberOfBlocks = sizeof(T) / m_blockSize;
 	}
-
+	int startBlock = *pointer->GetIndex();
+	int endValue = startBlock + numberOfBlocks;
+	for (int blockDealloc = startBlock; blockDealloc < endValue; blockDealloc++)
+	{
+		m_rawPool[blockDealloc].second = true;
+		m_blocksRemaining++;
+	}
 	
-	return false;
+
+	for (std::vector<SmartPointer<T>>::iterator it = m_locationMap.begin(); it != m_locationMap.end(); ++it)
+	{
+		if (*it->GetActual() == *pointer->GetActual()) 
+		{
+			m_locationMap.erase(it);
+			break;
+		}
+	}
+	return true;
 }

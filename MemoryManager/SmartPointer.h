@@ -10,14 +10,16 @@ class SmartPointer
 {
 public:
 	
-	SmartPointer(T* value, MemoryManager* m, Location l);
+	SmartPointer(T* value, MemoryManager* m, Location l, int index = 0);
 	~SmartPointer();
 	SmartPointer(const SmartPointer<T>& pointerToCopy);
-	SmartPointer<T>& operator = (const SmartPointer<T>& pointerToAssign)
+	SmartPointer<T>& operator = (const SmartPointer<T>& pointerToAssign);
+	bool operator==(const SmartPointer<T>& pointer);
 	T& operator* ();
 	T* operator->();
 	T* GetActual();
-
+	int GetIndex();
+	void UpdateActual();
 	PointerCounter* GetCounter();
 	MemoryManager* GetManager();
 	Location GetLocation();
@@ -28,5 +30,6 @@ private:
 	//0,1,2 for dif
 	Location m_locationType;
 	PointerCounter* m_p;
+	int m_index;
 };
 

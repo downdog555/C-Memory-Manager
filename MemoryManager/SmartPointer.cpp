@@ -5,19 +5,21 @@
 
 
 template<typename T>
-SmartPointer<T>::SmartPointer(T * value, MemoryManager* m, Location l)
+SmartPointer<T>::SmartPointer(T * value, MemoryManager* m, Location l, int index = 0)
 {
 	m_actual = value;
 	m_p = new PointerCounter();
 	m_p->increase();
 	m_manager = m;
 	m_locationType = l;
+	m_index = index;
+	m_listIndex = listIndex;
 }
 
 template<typename T>
 SmartPointer::~SmartPointer()
 {
-	if (m_p->decrease() == 0) 
+	if (m_p->decrease() == 1) 
 	{
 		//we can send a note to the memeory manager to remove them....
 		Deallocate();
@@ -52,6 +54,12 @@ T * SmartPointer<T>::GetActual()
 }
 
 template<typename T>
+int SmartPointer<T>::GetIndex()
+{
+	return m_index;
+}
+
+template<typename T>
 PointerCounter * SmartPointer<T>::GetCounter()
 {
 	return p;
@@ -83,12 +91,17 @@ SmartPointer<T>& SmartPointer<T>::operator = (const SmartPointer<T>& pointerToAs
 	// we do not want to self assign...
 	if (this != &pointerToAssign) 
 	{
-		//we need to decrease the counter so that for assignment within a code block there is not an inaccurate count
-		if(m_p->decrease() == 0)
-		{
-			//we need to send message
-			Deallocate();
-		}
+		return this;
 	}
-	return *this;
+	return NULL;
+}
+
+template<typename T>
+bool SmartPointer<T>::operator==(const SmartPointer<T>& pointer)
+{
+	if (this.m_actual == pointer.GetActual()) 
+	{
+		return true
+	}
+	return false;
 }
