@@ -1,27 +1,18 @@
 #pragma once
 #include <vector>
 #include <iostream>
-template<typename T>
-/// <summary>
-/// struct representing an entry for the pool so we can reallocate
-/// </summary>
-struct poolMapEntry 
-{
-	T ** userPointer;
-	T* actualPointer;
-	int numberOfBlocks;
-
-};
+#include "SmartPointer.h"
+#include "MemoryManager.h"
 
 class Pool
 {
 public:
-	Pool(char* start, int numberOfBytes, int sizeOfBlocks);
+	Pool(char* start, int numberOfBytes, int sizeOfBlocks, MemoryManager* m);
 	~Pool();
 	template<typename T>
-	T* allocate(T objectRequired);
+	SmartPointer<T> allocate(T objectRequired);
 	template<typename T>
-	bool deallocate(T *location);
+	bool deallocate(SmartPointer<T> pointer);
 	int memoryRemaining();
 	int blocksRemaining();
 private:
@@ -30,16 +21,17 @@ private:
 	int m_blocksRemaining;
 	int m_blockSize;
 	int	m_numberOfBlocks;
+	MemoryManager* m_manager;
 	bool m_defragmenting;
 	//bool in pair is false for in use, true for free
 	std::vector<std::pair<char*, bool>> m_rawPool;
 	template<typename T>
-	std::vector<poolMapEntry<T>> m_locationMap;
+	std::vector<SmartPointer<T>> m_locationMap;
 	void defragment();
 };
 
 template<typename T>
-inline T * Pool::allocate(T objectRequired)
+inline SmartPointer<T> Pool::allocate(T objectRequired)
 {
 	int numOfBlocksReq;
 	//since we have size of T we knwo how many blocks are required
@@ -118,18 +110,37 @@ inline T * Pool::allocate(T objectRequired)
 		}
 		m_blocksRemaining -= numOfBlocksReq;
 		char* start = m_rawPool[startBlock].first;
-		//we create the struct
-		poolMapEntry<T> temp;
+		
+		
 		T *obj = new(start) T();
-		temp.actualPointer = obj;
-		temp.numberOfBlocks = numOfBlocksReq;
-		temp.userPointer = T ** p = &obj;
+		SmartPointer<T> temp(obj, m_manager, 2);
+		
 		m_locationMap.pushBack(temp);
-		return temp.userPointer;
+		return temp;
 
 		
 
 	}
 
 	return NULL;
+}
+
+template<typename T>
+inline bool Pool::deallocate(SmartPointer<T> pointer)
+{
+	//we have a smart pointer so we can dereference that to get actual location
+	//then we can deallocate that
+	int numOfBlocksReq;
+	//since we have size of T we knwo how many blocks are required
+	if (sizeof(T) % m_blockSize > 0)
+	{
+		numOfBlocksReq = sizeof(T) / m_blockSize + 1;
+	}
+	else
+	{
+		numOfBlocksReq = sizeof(T) / m_blockSize;
+	}
+
+	
+	return false;
 }
