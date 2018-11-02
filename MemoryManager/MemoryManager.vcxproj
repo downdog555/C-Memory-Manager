@@ -130,6 +130,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ActualWrapper.cpp" />
     <ClCompile Include="doubleStack.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MemoryManager.cpp" />
@@ -139,6 +140,7 @@
     <ClCompile Include="stack.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="ActualWrapper.h" />
     <ClInclude Include="doubleStack.h" />
     <ClInclude Include="MemoryManager.h" />
     <ClInclude Include="PointerCounter.h" />

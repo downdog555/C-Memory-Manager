@@ -156,8 +156,9 @@ inline bool Pool::deallocate(SmartPointer<T>* pointer)
 		if (*it->GetActual() == *pointer->GetActual()) 
 		{
 			m_locationMap.erase(it);
-			break;
+			return true;
+			
 		}
 	}
-	return true;
+	return false;
 }

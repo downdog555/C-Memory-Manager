@@ -44,3 +44,16 @@ int Pool::blocksRemaining()
 {
 	return m_blocksRemaining;
 }
+/// <summary>
+/// method to defrag called when we have enough blocks but not enough consecutively
+/// </summary>
+void Pool::defragment()
+{
+	//we need to start with each smart pointer,
+	//we get each actual,
+	//then we see if there is a free block before it.
+	//if there is we will try to move it up
+	//we propagate the update by the smart pointers we have access to, use the update actual function...
+
+
+}

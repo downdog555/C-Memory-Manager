@@ -5,9 +5,9 @@
 
 
 template<typename T>
-SmartPointer<T>::SmartPointer(T * value, MemoryManager* m, Location l, int index = 0)
+SmartPointer<T>::SmartPointer(ActualWrapper* actual, MemoryManager* m, Location l, int index = 0)
 {
-	m_actual = value;
+	m_actualWrapper = actual;
 	m_p = new PointerCounter();
 	m_p->increase();
 	m_manager = m;
@@ -28,7 +28,7 @@ SmartPointer::~SmartPointer()
 template<typename T>
 SmartPointer<T>::SmartPointer(const SmartPointer<T>& pointerToCopy)
 {
-	m_actual = pointerToCopy->GetActual();
+	
 	m_p = pointerToCopy->GetCounter();
 	m_manager = pointerToCopy->GetManager();
 	m_locationType = pointerToCopy->GetLocation;;
@@ -38,12 +38,14 @@ SmartPointer<T>::SmartPointer(const SmartPointer<T>& pointerToCopy)
 template<typename T>
 T & SmartPointer<T>::operator*()
 {
+	T * actual = *m_actualWrapper->GetActual();
 	return *actual;
 }
 
 template<typename T>
 T * SmartPointer<T>::operator->()
 {
+	T * actual = *m_actualWrapper->GetActual();
 	return actual;
 }
 
@@ -57,6 +59,12 @@ template<typename T>
 int SmartPointer<T>::GetIndex()
 {
 	return m_index;
+}
+
+template<typename T>
+void SmartPointer<T>::UpdateActual(char * actual)
+{
+	m_actualWrapper->UpdateActual(actual);
 }
 
 template<typename T>
@@ -99,7 +107,7 @@ SmartPointer<T>& SmartPointer<T>::operator = (const SmartPointer<T>& pointerToAs
 template<typename T>
 bool SmartPointer<T>::operator==(const SmartPointer<T>& pointer)
 {
-	if (this.m_actual == pointer.GetActual()) 
+	if (this.m_actualWrapper.GetActual() == pointer.GetActual()) 
 	{
 		return true
 	}
