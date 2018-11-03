@@ -20,7 +20,7 @@ int main()
 	//we need to reserve memeory
 	void* memory = malloc(16);
 	//we then need to create a stack
-	stack stackCurrent((char*)memory, 16);
+	Stack stackCurrent((char*)memory, 16);
 	std::cout << "Size of struct 1 is " << sizeof(one) << std::endl;
 	std::cout << "Size of struct 2 is " << sizeof(two) << std::endl;
 	one a;

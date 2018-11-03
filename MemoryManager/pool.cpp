@@ -47,6 +47,7 @@ int Pool::blocksRemaining()
 /// <summary>
 /// method to defrag called when we have enough blocks but not enough consecutively
 /// </summary>
+template<typename T>
 void Pool::defragment()
 {
 	//we need to start with each smart pointer,
@@ -54,6 +55,83 @@ void Pool::defragment()
 	//then we see if there is a free block before it.
 	//if there is we will try to move it up
 	//we propagate the update by the smart pointers we have access to, use the update actual function...
+	//we will use memmove
+	//we go through the 
+	for (int i = 0; i< m_rawPool.size(); i++)
+	{
+		//we go through the raw pool block by block, find the corrosponding smart pointer
+		//get the size of T and what not and re-assign....
+		SmartPointer s;
+		for (int j = 0; j < m_locationMap.size(); j++) 
+		{
+			if (m_rawPool[i].first == (char*)m_locationMap[j].GetActual()) 
+			{
+				//we have found smart pointer
+				s = m_locationMap[j];
+			}
+		}
+		//we now need to re alloc if we can...
+		int numberOfBlocks;
+		
 
 
+			//since we have size of T we knwo how many blocks are required
+			if (sizeof(T) % m_blockSize > 0)
+			{
+				numberOfBlocks = sizeof(T) / m_blockSize + 1;
+			}
+			else
+			{
+				numberOfBlocks = sizeof(T) / m_blockSize;
+			}
+		if (i == 0) 
+		{
+			// since we cannot, the we need to advanced the counter by the number of blocks - 1
+
+
+			i += (numberOfBlocks -1);
+			continue;
+		}
+		//we now need another loop to find out where we can star to assign from
+		int newStartCounter = i-1;
+		while (newStartCounter > 0) 
+		{
+			if (m_rawPool[newStartCounter].second == false) 
+			{
+				break;
+			}
+			newStartCounter--;
+		}
+
+		//we now know the index block we can assign from, we also know the size of t and the number of blocks so we can use 
+		int numOfBytes = numberOfBlocks * m_blockSize;
+		std::memmove((void*)m_rawPool[newStartCounter].first,(void*)m_rawPool[i].first, numOfBytes);
+		//we then need to update the smart pointer with the new place
+		s.UpdateActual(m_rawPool[newStartCounter].first);
+		//we then can set from this point till the end of file.
+		//
+		int endOfBothBlocks = i + numberOfBlocks;
+		for (int blockReset = newStartCounter; newStartCounter < endOfBothBlocks; blockReset ++)
+		{
+			int secondCounter = 0;
+			int endOfFirst = newStartCounter + numberOfBlocks;
+			if (secondCounter < endOfFirst)
+			{
+				m_rawPool[blockReset].second = false;
+
+
+
+
+				secondCounter++;
+			}
+			else 
+			{
+				m_rawPool[blockReset].second = true;
+			}
+
+		}
+	}
+
+
+	
 }

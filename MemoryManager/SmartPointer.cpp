@@ -5,7 +5,7 @@
 
 
 template<typename T>
-SmartPointer<T>::SmartPointer(ActualWrapper* actual, MemoryManager* m, Location l, int index = 0)
+SmartPointer::SmartPointer(ActualWrapper<T>* actual, MemoryManager* m, Location l, int index = 0)
 {
 	m_actualWrapper = actual;
 	m_p = new PointerCounter();
@@ -25,76 +25,76 @@ SmartPointer::~SmartPointer()
 		Deallocate();
 	}
 }
-template<typename T>
-SmartPointer<T>::SmartPointer(const SmartPointer<T>& pointerToCopy)
+
+SmartPointer::SmartPointer( SmartPointer& pointerToCopy)
 {
 	
-	m_p = pointerToCopy->GetCounter();
-	m_manager = pointerToCopy->GetManager();
-	m_locationType = pointerToCopy->GetLocation;;
+	m_p = pointerToCopy.GetCounter();
+	m_manager = pointerToCopy.GetManager();
+	m_locationType = pointerToCopy.GetLocation;;
 	m_p->increase();
 }
 
 template<typename T>
-T & SmartPointer<T>::operator*()
+T & SmartPointer::operator*()
 {
 	T * actual = *m_actualWrapper->GetActual();
 	return *actual;
 }
 
 template<typename T>
-T * SmartPointer<T>::operator->()
+T * SmartPointer::operator->()
 {
 	T * actual = *m_actualWrapper->GetActual();
 	return actual;
 }
 
 template<typename T>
-T * SmartPointer<T>::GetActual()
+T * SmartPointer::GetActual()
 {
-	return m_actual;
+	return *m_actualWrapper->GetActual();
 }
 
-template<typename T>
-int SmartPointer<T>::GetIndex()
+
+int SmartPointer::GetIndex()
 {
 	return m_index;
 }
 
-template<typename T>
-void SmartPointer<T>::UpdateActual(char * actual)
+
+void SmartPointer::UpdateActual(char * actual)
 {
-	m_actualWrapper->UpdateActual(actual);
+	m_actualWrapper.UpdateActual(actual);
 }
 
-template<typename T>
-PointerCounter * SmartPointer<T>::GetCounter()
+
+PointerCounter * SmartPointer::GetCounter()
 {
-	return p;
+	return m_p;
 }
 
-template<typename T>
-MemoryManager * SmartPointer<T>::GetManager()
+
+MemoryManager * SmartPointer::GetManager()
 {
 	return m_manager;
 }
 
-template<typename T>
-Location SmartPointer<T>::GetLocation()
+
+Location SmartPointer::GetLocation()
 {
 	return m_locationType;
 }
 
-template<typename T>
-void SmartPointer<T>::Deallocate()
+
+void SmartPointer::Deallocate()
 {
 	delete m_p;
 	//we now need to send the message to the manager to deallocate
 	m_manager->deallocate(m_actual, locationType);
 }
 
-template<typename T>
-SmartPointer<T>& SmartPointer<T>::operator = (const SmartPointer<T>& pointerToAssign) 
+
+SmartPointer& SmartPointer::operator = (const SmartPointer& pointerToAssign) 
 {
 	// we do not want to self assign...
 	if (this != &pointerToAssign) 
@@ -105,11 +105,12 @@ SmartPointer<T>& SmartPointer<T>::operator = (const SmartPointer<T>& pointerToAs
 }
 
 template<typename T>
-bool SmartPointer<T>::operator==(const SmartPointer<T>& pointer)
+bool SmartPointer::operator==(const SmartPointer& pointer)
 {
-	if (this.m_actualWrapper.GetActual() == pointer.GetActual()) 
+	if (this.m_actualWrapper.GetActual() == pointer.GetActual())
 	{
 		return true
 	}
 	return false;
 }
+
