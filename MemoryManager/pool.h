@@ -13,7 +13,7 @@ public:
 	template<typename T>
 	SmartPointer allocate(T objectRequired);
 	template<typename T>
-	bool deallocate(SmartPointer* pointer);
+	bool deallocate(SmartPointer * pointer, T* type);
 	int memoryRemaining();
 	int blocksRemaining();
 private:
@@ -128,13 +128,13 @@ inline SmartPointer Pool::allocate(T objectRequired)
 	return NULL;
 }
 template<typename T>
-inline bool Pool::deallocate(SmartPointer * pointer)
+inline bool Pool::deallocate(SmartPointer * pointer, T* actPoint)
 {
 	//we have need to loop through pool map and find the matching char pointer...
 	//remove from the list and then deallocate
 	//using thesecond value as the number of blocks
 	int numberOfBlocks;
-	T* actPoint=pointer->GetActual();
+	
 	//since we have size of T we knwo how many blocks are required
 	if (sizeof(T) % m_blockSize > 0)
 	{

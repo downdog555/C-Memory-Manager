@@ -11,7 +11,7 @@ class SmartPointer
 {
 public:
 	template <typename T>
-	SmartPointer(ActualWrapper<T>* actual, MemoryManager* m, Location l, int index = 0);
+	SmartPointer(ActualWrapper<T>* actual, MemoryManager* m, Location l, int index = 0, bool frontBack = false);
 	~SmartPointer();
 	SmartPointer( SmartPointer& pointerToCopy);
 	SmartPointer& operator = (const SmartPointer& pointerToAssign);
@@ -27,6 +27,7 @@ public:
 	PointerCounter* GetCounter();
 	MemoryManager* GetManager();
 	Location GetLocation();
+	bool m_frontBack;
 private:
 	void Deallocate();
 	template <typename T>

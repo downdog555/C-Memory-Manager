@@ -5,7 +5,7 @@
 
 
 template<typename T>
-SmartPointer::SmartPointer(ActualWrapper<T>* actual, MemoryManager* m, Location l, int index = 0)
+SmartPointer::SmartPointer(ActualWrapper<T>* actual, MemoryManager* m, Location l, int index = 0, bool frontBack = false)
 {
 	m_actualWrapper = actual;
 	m_p = new PointerCounter();
@@ -14,6 +14,7 @@ SmartPointer::SmartPointer(ActualWrapper<T>* actual, MemoryManager* m, Location 
 	m_locationType = l;
 	m_index = index;
 	m_listIndex = listIndex;
+	m_frontBack = frontBack;
 }
 
 template<typename T>
@@ -56,15 +57,17 @@ T * SmartPointer::GetActual()
 }
 
 
+
+
 int SmartPointer::GetIndex()
 {
 	return m_index;
 }
 
-
+template<typename T>
 void SmartPointer::UpdateActual(char * actual)
 {
-	m_actualWrapper.UpdateActual(actual);
+	m_actualWrapper<T>->UpdateActual(actual);
 }
 
 
@@ -90,7 +93,7 @@ void SmartPointer::Deallocate()
 {
 	delete m_p;
 	//we now need to send the message to the manager to deallocate
-	m_manager->deallocate(m_actual, locationType);
+	//m_manager->deallocate(m_actual, locationType);
 }
 
 
