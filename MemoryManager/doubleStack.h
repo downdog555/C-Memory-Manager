@@ -92,7 +92,7 @@ template<class T>
 /// </summary>
 /// <param name="objectRequired">the object to be instanciated</param>
 /// <returns>a pointer to the new object</returns>
-inline T * doubleStack::allocateBack(T objectRequired)
+inline T * DoubleStack::allocateBack(T objectRequired)
 {
 
 	if (m_currentBack - sizeof(T) >= m_currentFront) 
@@ -115,7 +115,7 @@ template<class T>
 /// </summary>
 /// <param name="location">the pointer to the object to de allocate</param>
 /// <returns></returns>
-inline bool doubleStack::deallocateBack(T * location)
+inline bool DoubleStack::deallocateBack(T * location)
 {
 	
 	if (m_currentBack + sizeof(T) == (char*)location)

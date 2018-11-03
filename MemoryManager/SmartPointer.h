@@ -10,6 +10,13 @@ enum Location {STACK, DB_STACK, POOL};
 class SmartPointer
 {
 public:
+	template<typename T>
+	/// <summary>
+	/// used to request a smart pointer of a certain type...
+	/// </summary>
+	/// <param name="type">the object to be requested</param>
+	/// <param name="manager">the memeory manger in use</param>
+	SmartPointer(T* type, MemoryManager* manager, Location loc = 2);
 	template <typename T>
 	SmartPointer(ActualWrapper<T>* actual, MemoryManager* m, Location l, int index = 0, bool frontBack = false);
 	~SmartPointer();

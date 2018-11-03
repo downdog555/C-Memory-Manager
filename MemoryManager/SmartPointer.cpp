@@ -5,6 +5,13 @@
 
 
 template<typename T>
+SmartPointer::SmartPointer(T * type, MemoryManager * manager, Location loc)
+{
+	//we need to request a new smart pointer from the correct cache and what not....
+
+}
+
+template<typename T>
 SmartPointer::SmartPointer(ActualWrapper<T>* actual, MemoryManager* m, Location l, int index = 0, bool frontBack = false)
 {
 	m_actualWrapper = actual;
