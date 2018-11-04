@@ -1,30 +1,6 @@
 #include "SmartPointer.h"
 #include "PointerCounter.h"
 
-
-
-
-template<typename T>
-SmartPointer::SmartPointer(T * type, MemoryManager * manager, Location loc)
-{
-	//we need to request a new smart pointer from the correct cache and what not....
-
-}
-
-template<typename T>
-SmartPointer::SmartPointer(ActualWrapper<T>* actual, MemoryManager* m, Location l, int index = 0, bool frontBack = false)
-{
-	m_actualWrapper = actual;
-	m_p = new PointerCounter();
-	m_p->increase();
-	m_manager = m;
-	m_locationType = l;
-	m_index = index;
-	m_listIndex = listIndex;
-	m_frontBack = frontBack;
-}
-
-template<typename T>
 SmartPointer::~SmartPointer()
 {
 	if (m_p->decrease() == 1) 
@@ -38,43 +14,23 @@ SmartPointer::SmartPointer( SmartPointer& pointerToCopy)
 {
 	
 	m_p = pointerToCopy.GetCounter();
+
 	m_manager = pointerToCopy.GetManager();
-	m_locationType = pointerToCopy.GetLocation;;
+	m_locationType = pointerToCopy.GetLocation();
 	m_p->increase();
 }
 
-template<typename T>
-T & SmartPointer::operator*()
+
+
+
+char * SmartPointer::GetActualComp()
 {
-	T * actual = *m_actualWrapper->GetActual();
-	return *actual;
+	return nullptr;
 }
-
-template<typename T>
-T * SmartPointer::operator->()
-{
-	T * actual = *m_actualWrapper->GetActual();
-	return actual;
-}
-
-template<typename T>
-T * SmartPointer::GetActual()
-{
-	return *m_actualWrapper->GetActual();
-}
-
-
-
 
 int SmartPointer::GetIndex()
 {
 	return m_index;
-}
-
-template<typename T>
-void SmartPointer::UpdateActual(char * actual)
-{
-	m_actualWrapper<T>->UpdateActual(actual);
 }
 
 
@@ -109,18 +65,16 @@ SmartPointer& SmartPointer::operator = (const SmartPointer& pointerToAssign)
 	// we do not want to self assign...
 	if (this != &pointerToAssign) 
 	{
-		return this;
+		return *this;
 	}
 	return NULL;
 }
 
-template<typename T>
 bool SmartPointer::operator==(const SmartPointer& pointer)
 {
-	if (this.m_actualWrapper.GetActual() == pointer.GetActual())
+	if (*this == pointer)
 	{
-		return true
+		return true;
 	}
 	return false;
 }
-

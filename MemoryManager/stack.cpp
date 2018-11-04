@@ -1,4 +1,7 @@
 #include "stack.h"
+Stack::Stack()
+{
+}
 /// <summary>
 /// Constructor that initilises the stack.
 /// </summary>

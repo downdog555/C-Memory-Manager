@@ -8,6 +8,7 @@
 	{
 	
 	public:
+		Stack();
 		Stack(char * startLocation, unsigned const int numberOfBytes);
 		~Stack();
 		template<typename T>

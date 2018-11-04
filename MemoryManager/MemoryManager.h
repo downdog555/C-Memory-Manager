@@ -1,14 +1,16 @@
 #pragma once
-#include "SmartPointer.h"
+
 #include "stack.h"
 #include "pool.h"
 #include "doubleStack.h"
+#include "SmartPointer.h"
+
 
 class MemoryManager
 {
 public:
 	MemoryManager(int bytesForStack, int bytesForDBStack, int bytesForPool, int blockSizePool);
-	template<typename T>
+
 	/// <summary>
 	/// Returns a smart pointer of the requested type...
 	/// </summary>
@@ -16,13 +18,16 @@ public:
 	/// <param name="storageLocation">defaults to using the pool, stack is 0 and 1 is double stack</param>
 	/// <param name="frontBack"> if storage requested is double stack true for front false for back</param>
 	/// <returns>a smart pointer</returns>
+	template<typename T>
 	SmartPointer Allocate(T type, int storageLocation = 2, bool frontBack = false);
 
 	template<typename T>
 	bool Deallocate(SmartPointer * s);
 
 	~MemoryManager();
-
+	int GetPoolBlocksLeft();
+	int GetStackBytesLeft();
+	int GetDBStackBytesLeft();
 
 private:
 	Stack m_stack;

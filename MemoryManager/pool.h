@@ -3,12 +3,13 @@
 #include <iostream>
 #include <tuple>
 #include "SmartPointer.h"
-#include "MemoryManager.h"
+//#include "MemoryManager.h"
 
 class Pool
 {
 public:
-	Pool(char* start, int numberOfBytes, int sizeOfBlocks, MemoryManager* m);
+	Pool();
+	Pool(char* start, int numberOfBytes, int sizeOfBlocks);
 	~Pool();
 	template<typename T>
 	SmartPointer allocate(T objectRequired);
@@ -22,7 +23,6 @@ private:
 	int m_blocksRemaining;
 	int m_blockSize;
 	int	m_numberOfBlocks;
-	MemoryManager* m_manager;
 	bool m_defragmenting;
 	//bool in pair is false for in use, true for free
 	std::vector<std::pair<char*, bool>> m_rawPool;

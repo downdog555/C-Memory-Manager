@@ -8,6 +8,7 @@ class DoubleStack
 {
 
 public:
+	DoubleStack();
 	DoubleStack(char * startLocation, unsigned const int numberOfBytes);
 	~DoubleStack();
 	template<typename T>

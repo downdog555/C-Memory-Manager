@@ -1,6 +1,7 @@
-#include "stack.h"
 #include <stdio.h>
 #include <iostream>
+#include "MemoryManager.h"
+#include "SmartPointer.h"
 struct one 
 {
 	int i = 0;
@@ -50,9 +51,16 @@ int main()
 	}
 	
 	free(memory);
+	void* mem2 = malloc(300);
+	MemoryManager manager(100,100,100,10);
+	std::cout << "number of bytes left stack: " << manager.GetStackBytesLeft() << std::endl;
+	std::cout << "number of bytes left db stack " << manager.GetDBStackBytesLeft() << std::endl;
+	std::cout << "number of blocks left pool: " << manager.GetPoolBlocksLeft() << std::endl;
 
 
 
+
+	free(mem2);
 	int i = 0;
 	std::cin >> i;
 	return 0;

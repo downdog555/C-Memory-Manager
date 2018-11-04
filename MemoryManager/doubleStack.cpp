@@ -1,4 +1,7 @@
 #include "doubleStack.h"
+DoubleStack::DoubleStack()
+{
+}
 /// <summary>
 /// main constructor
 /// initialises the required counters
