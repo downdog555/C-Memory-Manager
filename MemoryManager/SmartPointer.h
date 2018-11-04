@@ -22,8 +22,8 @@ public:
 
 	~SmartPointer();
 	SmartPointer(SmartPointer& pointerToCopy);
-	SmartPointer& operator = (const SmartPointer& pointerToAssign);
-	bool operator==(const SmartPointer& pointer);
+	SmartPointer& operator = ( SmartPointer& pointerToAssign);
+	bool operator==( SmartPointer& pointer);
 	template <typename T>
 	T& operator *();
 	template <typename T>
@@ -33,10 +33,12 @@ public:
 
 	char* GetActualComp();
 	int GetIndex();
-	void UpdateActual(char* actual);
+	template<typename T>
+	void UpdateActual(T* actual);
 	PointerCounter * GetCounter();
 	MemoryManager * GetManager();
 	Location GetLocation();
+	ActualWrapper* GetActualWrapper();
 	bool m_frontBack;
 private:
 	void Deallocate();
@@ -96,8 +98,8 @@ inline T * SmartPointer::GetActual()
 
 
 
-
-void SmartPointer::UpdateActual(char * actual)
+template<typename T>
+inline void SmartPointer::UpdateActual(T * actual)
 {
 	m_actualWrapper->UpdateActual(actual);
 }

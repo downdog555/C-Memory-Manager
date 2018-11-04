@@ -109,7 +109,7 @@ void Pool::defragment()
 		int numOfBytes = numberOfBlocks * m_blockSize;
 		std::memmove((void*)m_rawPool[newStartCounter].first,(void*)m_rawPool[i].first, numOfBytes);
 		//we then need to update the smart pointer with the new place
-		s.UpdateActual(m_rawPool[newStartCounter].first);
+		s.UpdateActual((T*)m_rawPool[newStartCounter].first);
 		//we then can set from this point till the end of file.
 		//
 		int endOfBothBlocks = i + numberOfBlocks;
