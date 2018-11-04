@@ -12,9 +12,9 @@ public:
 	Pool(char* start, int numberOfBytes, int sizeOfBlocks);
 	~Pool();
 	template<typename T>
-	SmartPointer allocate(T objectRequired);
+	SmartPointer<T> allocate(T objectRequired);
 	template<typename T>
-	bool deallocate(SmartPointer * pointer, T* type);
+	bool deallocate(SmartPointer<T> * pointer);
 	int memoryRemaining();
 	int blocksRemaining();
 private:
@@ -27,18 +27,19 @@ private:
 	//bool in pair is false for in use, true for free
 	std::vector<std::pair<char*, bool>> m_rawPool;
 	//char pointer is start, int is number of required blocks second int is block index
-	
-	std::vector<SmartPointer> m_locationMap;
+	//we will store just a char pointer to the actual
+	std::vector<char*> m_locationMap;
+
 	template<typename T>
 	void defragment();
 };
 
 template<typename T>
-inline SmartPointer Pool::allocate(T objectRequired)
+inline SmartPointer<T> Pool::allocate(T objectRequired)
 {
 	int numOfBlocksReq;
 	//since we have size of T we knwo how many blocks are required
-	if (sizeof(T) % m_blockSize > 0) 
+	if (sizeof(T) % m_blockSize > 0)
 	{
 		numOfBlocksReq = sizeof(T) / m_blockSize + 1;
 	}
@@ -116,9 +117,9 @@ inline SmartPointer Pool::allocate(T objectRequired)
 		
 		
 		T *obj = new(start) T();
-		SmartPointer temp(obj, m_manager, 2, startBlock);
+		SmartPointer<T> temp(obj, m_manager, 2, startBlock);
 	
-		m_locationMap.pushBack(temp);
+		m_locationMap.pushBack((char*)obj);
 		return temp;
 
 		
@@ -128,7 +129,7 @@ inline SmartPointer Pool::allocate(T objectRequired)
 	return NULL;
 }
 template<typename T>
-inline bool Pool::deallocate(SmartPointer * pointer, T* actPoint)
+inline bool Pool::deallocate(SmartPointer<T> * pointer)
 {
 	//we have need to loop through pool map and find the matching char pointer...
 	//remove from the list and then deallocate

@@ -1,39 +1,48 @@
 #pragma once
-
+template<typename T>
 class ActualWrapper
 {
 public:
-	template<typename T>
+
 	ActualWrapper(T * actualPointer);
-	template<typename T>
+
 	void UpdateActual(T * actualPointer);
-	template<typename T>
+
 	T * GetActual();
+
+	char* GetActualComp();
+
 	~ActualWrapper();
 private:
-	template<typename T>
 	T * m_actual;
 };
 
 template<typename T>
-inline ActualWrapper::ActualWrapper(T * actualPointer)
+inline  ActualWrapper<T>::ActualWrapper(T * actualPointer)
 {
 	m_actual = actualPointer;
 }
 
 template<typename T>
-inline void ActualWrapper::UpdateActual(T * actualPointer)
+inline void   ActualWrapper<T>::UpdateActual(T * actualPointer)
 {
 	m_actual = actualPointer;
 }
 
 template<typename T>
-inline T * ActualWrapper::GetActual()
+inline T *  ActualWrapper<T>::GetActual()
 {
 	return m_actual;
 }
 
+template<typename T>
+inline char *  ActualWrapper<T>::GetActualComp()
+{
+	T* meow = m_actual;
+	return (char*)m_actual;
+}
 
- ActualWrapper::~ActualWrapper()
+template<typename T>
+ActualWrapper<T>::~ActualWrapper()
 {
 }

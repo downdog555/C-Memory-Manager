@@ -7,43 +7,47 @@ class MemoryManager;
 /// <summary>
 /// class representing the smart pointer
 /// </summary>
+template<typename T>
 class SmartPointer
 {
 public:
-	template<typename T>
+	
 	/// <summary>
 	/// used to request a smart pointer of a certain type...
 	/// </summary>
 	/// <param name="type">the object to be requested</param>
 	/// <param name="manager">the memeory manger in use</param>
 	SmartPointer(T* type, MemoryManager* manager, Location loc = 2);
-	
-	SmartPointer(ActualWrapper* actual, MemoryManager* m, Location l, int index , bool frontBack );
 
+	SmartPointer(ActualWrapper<T>* actual, MemoryManager* m, Location l, int index = 0, bool frontBack = false);
+	
 	~SmartPointer();
+
 	SmartPointer(SmartPointer& pointerToCopy);
+
 	SmartPointer& operator = ( SmartPointer& pointerToAssign);
 	bool operator==( SmartPointer& pointer);
-	template <typename T>
+
 	T& operator *();
-	template <typename T>
+
 	T* operator ->();
-	template <typename T>
+
 	T* GetActual();
 
 	char* GetActualComp();
 	int GetIndex();
-	template<typename T>
+
 	void UpdateActual(T* actual);
 	PointerCounter * GetCounter();
 	MemoryManager * GetManager();
 	Location GetLocation();
-	ActualWrapper* GetActualWrapper();
+	ActualWrapper<T>* GetActualWrapper();
 	bool m_frontBack;
 private:
+
 	void Deallocate();
-	
-	ActualWrapper* m_actualWrapper;
+
+	ActualWrapper<T>* m_actualWrapper;
 	
 	MemoryManager * m_manager;
 	//0,1,2 for dif
@@ -54,14 +58,14 @@ private:
 
 
 template<typename T>
-inline SmartPointer::SmartPointer(T * type, MemoryManager * manager, Location loc)
+inline SmartPointer<T>::SmartPointer(T * type, MemoryManager * manager, Location loc)
 {
 	//we need to request a new smart pointer from the correct cache and what not....
 
 }
 
-
-SmartPointer::SmartPointer(ActualWrapper* actual, MemoryManager* m, Location l, int index = 0, bool frontBack = false)
+template<typename T>
+inline SmartPointer<T>::SmartPointer(ActualWrapper<T>* actual, MemoryManager* m, Location l, int index, bool frontBack)
 {
 	m_actualWrapper = actual;
 	m_p = new PointerCounter();
@@ -73,24 +77,31 @@ SmartPointer::SmartPointer(ActualWrapper* actual, MemoryManager* m, Location l, 
 	m_frontBack = frontBack;
 }
 
-
+template<typename T>
+ inline void SmartPointer<T>::Deallocate()
+{
+	
+	//we now need to send the message to the manager to deallocate
+	//TODO send message to manager
+	//m_manager->deallocate(m_actual, locationType);
+}
 
 template<typename T>
-inline T & SmartPointer::operator*()
+inline T & SmartPointer<T>::operator*()
 {
 	T * actual = *m_actualWrapper->GetActual();
 	return *actual;
 }
 
 template<typename T>
-inline T * SmartPointer::operator->()
+inline T * SmartPointer<T>::operator->()
 {
 	T * actual = *m_actualWrapper->GetActual();
 	return actual;
 }
 
 template<typename T>
-inline T * SmartPointer::GetActual()
+inline T * SmartPointer<T>::GetActual()
 {
 	return *m_actualWrapper->GetActual();
 }
@@ -99,7 +110,7 @@ inline T * SmartPointer::GetActual()
 
 
 template<typename T>
-inline void SmartPointer::UpdateActual(T * actual)
+inline void SmartPointer<T>::UpdateActual(T * actual)
 {
 	m_actualWrapper->UpdateActual(actual);
 }

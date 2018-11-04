@@ -15,9 +15,10 @@ Pool::Pool(char * start, int numberOfBytes, int sizeOfBlocks)
 	m_start = start;
 	m_end = start + numberOfBytes;
 	m_blockSize = sizeOfBlocks;
-
+	
 	//we also need to initalise the block pool
 	m_numberOfBlocks = numberOfBytes / sizeOfBlocks;
+	m_blocksRemaining = m_numberOfBlocks;
 	m_rawPool.reserve(m_numberOfBlocks);
 	for (int i = 0; i < m_numberOfBlocks; i++) 
 	{

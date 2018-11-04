@@ -1,7 +1,7 @@
 #include "SmartPointer.h"
 #include "PointerCounter.h"
-
-SmartPointer::~SmartPointer()
+template<typename T>
+SmartPointer<T>::~SmartPointer()
 {
 	if (m_p->decrease() == 1) 
 	{
@@ -9,69 +9,62 @@ SmartPointer::~SmartPointer()
 		Deallocate();
 	}
 }
-
-SmartPointer::SmartPointer( SmartPointer& pointerToCopy)
+template<typename T>
+SmartPointer<T>::SmartPointer( SmartPointer<T>& pointerToCopy)
 {
 	
-	m_p = pointerToCopy.GetCounter();
-
-	m_manager = pointerToCopy.GetManager();
-	m_locationType = pointerToCopy.GetLocation();
-	m_p->increase();
+	this->m_p = pointerToCopy.GetCounter();
+	
+	this->m_manager = pointerToCopy.GetManager();
+	this->m_locationType = pointerToCopy.GetLocation();
+	this->m_p->increase();
 }
 
 
 
-
-char * SmartPointer::GetActualComp()
+template<typename T>
+char * SmartPointer<T>::GetActualComp()
 {
-	return nullptr;
+	return m_actualWrapper->GetActualComp();
 }
-
-int SmartPointer::GetIndex()
+template<typename T>
+int SmartPointer<T>::GetIndex()
 {
 	return m_index;
 }
 
-
-PointerCounter * SmartPointer::GetCounter()
+template<typename T>
+PointerCounter * SmartPointer<T>::GetCounter()
 {
 	return m_p;
 }
 
-
-MemoryManager * SmartPointer::GetManager()
+template<typename T>
+MemoryManager * SmartPointer<T>::GetManager()
 {
 	return m_manager;
 }
 
-
-Location SmartPointer::GetLocation()
+template<typename T>
+Location SmartPointer<T>::GetLocation()
 {
 	return m_locationType;
 }
-
-ActualWrapper * SmartPointer::GetActualWrapper()
+template<typename T>
+ActualWrapper<T> * SmartPointer<T>::GetActualWrapper()
 {
-	return m_actualWrapper;;
+	return m_actualWrapper;
 }
 
 
-void SmartPointer::Deallocate()
-{
-	delete m_p;
-	delete m_actualWrapper;
-	//we now need to send the message to the manager to deallocate
-//TODO send message to manager
-	//m_manager->deallocate(m_actual, locationType);
-}
 
-
-SmartPointer& SmartPointer::operator = ( SmartPointer& pointerToAssign) 
+template <typename T>
+SmartPointer<T>& SmartPointer<T>::operator = ( SmartPointer<T>& pointerToAssign) 
 {
 	// we do not want to self assign...
 	if (this != &pointerToAssign) 
 	{
+		T* temp = pointerToAssign.GetActual();
 		//we should have 1 refernece left in the pool stack ir double stack
 		if (m_p->decrease() == 1)
 		{
@@ -89,8 +82,8 @@ SmartPointer& SmartPointer::operator = ( SmartPointer& pointerToAssign)
 	}
 	return *this;
 }
-
-bool SmartPointer::operator==( SmartPointer& pointer)
+template<typename T>
+bool SmartPointer<T>::operator==( SmartPointer& pointer)
 {
 	if (this->GetActualComp() == pointer.GetActualComp())
 	{

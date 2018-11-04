@@ -19,10 +19,10 @@ public:
 	/// <param name="frontBack"> if storage requested is double stack true for front false for back</param>
 	/// <returns>a smart pointer</returns>
 	template<typename T>
-	SmartPointer Allocate(T type, int storageLocation = 2, bool frontBack = false);
+	SmartPointer<T> Allocate(T type, int storageLocation = 2, bool frontBack = false);
 
 	template<typename T>
-	bool Deallocate(SmartPointer * s);
+	bool Deallocate(SmartPointer<T> * s);
 
 	~MemoryManager();
 	int GetPoolBlocksLeft();
@@ -37,7 +37,7 @@ private:
 };
 
 template<typename T>
-inline SmartPointer MemoryManager::Allocate(T type, int storageLocation, bool frontBack)
+inline SmartPointer<T> MemoryManager::Allocate(T type, int storageLocation, bool frontBack)
 {
 	SmartPointer s;
 	if (storageLocation == 0)
@@ -63,7 +63,7 @@ inline SmartPointer MemoryManager::Allocate(T type, int storageLocation, bool fr
 }
 
 template<typename T>
-inline bool MemoryManager::Deallocate(SmartPointer * s)
+inline bool MemoryManager::Deallocate(SmartPointer<T> * s)
 {
 	int locationType = s->GetLocation();
 	if (locationType == 0)
