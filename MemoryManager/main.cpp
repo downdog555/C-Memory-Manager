@@ -2,6 +2,8 @@
 #include <iostream>
 #include "MemoryManager.h"
 #include "SmartPointer.h"
+
+//#include "SmartPointer.h"
 struct one 
 {
 	int i = 0;
@@ -15,6 +17,20 @@ struct two
 	int k = 0;
 	int l = 0;
 
+};
+class twoC 
+{
+public:
+	twoC() 
+	{
+		i = 1;
+		j = 1;
+		k = 1;
+	}
+private:
+	int i;
+	int j;
+	int k;
 };
 int main() 
 {
@@ -56,8 +72,13 @@ int main()
 	std::cout << "number of bytes left stack: " << manager.GetStackBytesLeft() << std::endl;
 	std::cout << "number of bytes left db stack " << manager.GetDBStackBytesLeft() << std::endl;
 	std::cout << "number of blocks left pool: " << manager.GetPoolBlocksLeft() << std::endl;
+	
+	//this should default to pool
+	
 
-
+	
+	SmartPointer<double> ptr(&manager);
+	std::cout << "number of blocks left pool: " << manager.GetPoolBlocksLeft() << std::endl;
 
 
 	free(mem2);

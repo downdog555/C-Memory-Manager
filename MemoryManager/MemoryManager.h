@@ -18,8 +18,10 @@ public:
 	/// <param name="storageLocation">defaults to using the pool, stack is 0 and 1 is double stack</param>
 	/// <param name="frontBack"> if storage requested is double stack true for front false for back</param>
 	/// <returns>a smart pointer</returns>
+	template<typename T, typename... Args>
+	SmartPointer<T> Allocate(T type,int storageLocation = 2, bool frontBack = false, Args... arg);
 	template<typename T>
-	SmartPointer<T> Allocate(T type, int storageLocation = 2, bool frontBack = false);
+	SmartPointer<T> Allocate(T type,int storageLocation = 2, bool frontBack = false);
 
 	template<typename T>
 	bool Deallocate(SmartPointer<T> * s);
@@ -36,32 +38,58 @@ private:
 	char* m_memoryStart;
 };
 
-template<typename T>
-inline SmartPointer<T> MemoryManager::Allocate(T type, int storageLocation, bool frontBack)
+
+
+template<typename T, typename... Args>
+inline SmartPointer<T> MemoryManager::Allocate(T type,int storageLocation, bool frontBack, Args... arg)
 {
-	SmartPointer s;
+	SmartPointer<T> s;
 	if (storageLocation == 0)
 	{
 
 	}
-	else if (storageLocation == 1) 
+	else if (storageLocation == 1)
 	{
-		if (frontBack) 
+		if (frontBack)
 		{
-			s = m_dbStack.allocateFront(type);
+			s = m_dbStack.allocateFront(T, arg);
 		}
-		else 
+		else
 		{
-			s = m_dbStack.allocateBack(type);
+			s = m_dbStack.allocateBack(T, arg);
 		}
 	}
-	else 
+	else
 	{
-		s = m_pool.allocate(type);
+		s = m_pool.allocate(T, arg);
 	}
-	return s;
+	return &s;
 }
+template<typename T>
+inline SmartPointer<T> MemoryManager::Allocate(T type,int storageLocation, bool frontBack)
+{
+	
+	if (storageLocation == 0)
+	{
 
+	}
+	else if (storageLocation == 1)
+	{
+		if (frontBack)
+		{
+			//return m_dbStack.allocateFront(type);
+		}
+		else
+		{
+			//return m_dbStack.allocateBack(type);
+		}
+	}
+	else
+	{
+		return m_pool.allocate(type);
+	}
+	return NULL;
+}
 template<typename T>
 inline bool MemoryManager::Deallocate(SmartPointer<T> * s)
 {

@@ -11,8 +11,8 @@
 		Stack();
 		Stack(char * startLocation, unsigned const int numberOfBytes);
 		~Stack();
-		template<typename T>
-		T* allocate(T objectRequired);
+		template<typename T, typename... Args>
+		T* allocate(T objectRequired, Args... args);
 		template<typename T>
 		bool deallocate(T *location);
 		int memoryRemaining();
@@ -25,14 +25,14 @@
 		//to deallocate
 		std::vector<void*> allocationLocations;
 	};
-	template<typename T>
+	template<typename T, typename... Args>
 	/// <summary>
 	/// Method To Allocate memory for a given class
 	/// we need to also keep track of each allocation
 	/// </summary>
 	/// <param name="objectRequired">The Object To Allocate</param>
 	/// <returns>A pointer to the object</returns>
-	inline	T * Stack::allocate(T objectRequired)
+	inline	T * Stack::allocate(T objectRequired, Args... args)
 	{
 		std::cout << sizeof(T) << std::endl;
 

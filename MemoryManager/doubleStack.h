@@ -11,12 +11,12 @@ public:
 	DoubleStack();
 	DoubleStack(char * startLocation, unsigned const int numberOfBytes);
 	~DoubleStack();
-	template<typename T>
-	T* allocateFront(T objectRequired);
+	template<typename T, typename... Args>
+	T* allocateFront(T objectRequired, Args... args);
 	template<typename T>
 	bool deallocateFront(T *location);
-	template<typename T>
-	T* allocateBack(T objectRequired);
+	template<typename T, typename... Args>
+	T* allocateBack(T objectRequired, Args... args);
 	template<typename T>
 	bool deallocateBack(T *location);
 	int memoryRemaining();
@@ -30,14 +30,14 @@ private:
 	//to deallocate
 	std::vector<void*> allocationLocations;
 };
-template<typename T>
+template<typename T, typename... Args>
 /// <summary>
 /// Method To Allocate memory for a given class to the front 
 /// we need to also keep track of each allocation
 /// </summary>
 /// <param name="objectRequired">The Object To Allocate</param>
 /// <returns>A pointer to the object</returns>
-inline	T * DoubleStack::allocateFront(T objectRequired)
+inline	T * DoubleStack::allocateFront(T objectRequired, Args... args)
 {
 	std::cout << sizeof(T) << std::endl;
 
@@ -87,13 +87,13 @@ inline bool DoubleStack::deallocateFront(T *location)
 
 }
 
-template<class T>
+template<typename T, typename... Args>
 /// <summary>
 /// function to allocate to the back of the stack.
 /// </summary>
 /// <param name="objectRequired">the object to be instanciated</param>
 /// <returns>a pointer to the new object</returns>
-inline T * DoubleStack::allocateBack(T objectRequired)
+inline T * DoubleStack::allocateBack(T objectRequired, Args... args)
 {
 
 	if (m_currentBack - sizeof(T) >= m_currentFront) 
