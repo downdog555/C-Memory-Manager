@@ -47,6 +47,31 @@ int Pool::blocksRemaining()
 {
 	return m_blocksRemaining;
 }
-/// <summary>
-/// method to defrag called when we have enough blocks but not enough consecutively
-/// </summary>
+void Pool::defragment()
+{
+	
+		//we need to start with each smart pointer,
+		//we get each actual,
+		//then we see if there is a free block before it.
+		//if there is we will try to move it up
+		//we propagate the update by the smart pointers we have access to, use the update actual function...
+		//we will use memmove
+		//we go through the 
+		for (int i = 0; i < m_rawPool.size(); i++)
+		{
+			//we go through the raw pool block by block, find the corrosponding smart pointer
+			//get the size of T and what not and re-assign....
+
+			for (int j = 0; j < m_locationMap.size(); j++)
+			{
+				if (m_rawPool[i].first == m_locationMap[j])
+				{
+					//we need to loop through the list of smart pointers created for this
+				}
+			}
+		}
+
+
+
+	
+}

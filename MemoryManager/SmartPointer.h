@@ -69,7 +69,7 @@ inline SmartPointer<T>::SmartPointer(MemoryManager * manager, int loc)
 {
 	std::cout << "Creation with smart pointer declaration" << std::endl;
 	//we need to request a new smart pointer from the correct cache and what not....
-	T type;
+	T type{};
 	SmartPointer<T> temp(manager->Allocate(type, loc, false));
 	
 	m_p = temp.GetCounter();
@@ -146,7 +146,7 @@ inline SmartPointer<T>::SmartPointer(MemoryManager * manager, int loc, Args... a
 {
 	std::cout << "Creation with smart pointer declaration" << std::endl;
 	//we need to request a new smart pointer from the correct cache and what not....
-	T type;
+	T type{};
 	this = manager.Allocate(type,loc, false, args);
 }template<typename T>
 inline SmartPointer<T>::~SmartPointer()

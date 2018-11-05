@@ -3,7 +3,6 @@
 #include <iostream>
 #include <tuple>
 #include "SmartPointer.h"
-//#include "MemoryManager.h"
 
 class Pool
 {
@@ -123,8 +122,8 @@ inline SmartPointer<T> Pool::allocate(T objectRequired, Args... args)
 		
 		T *obj = new(start) T(args);
 		//SmartPointer(ActualWrapper<T>* actual, MemoryManager* m, int l = POOL, int index = 0, bool frontBack = false);
-		ActualWrapper<T>* actual(obj);
-		SmartPointer<T> temp(actual, m_manager, 2, startBlock);
+		ActualWrapper<T> actual(obj);
+		SmartPointer<T> temp(&actual, m_manager, 2, startBlock, false);
 	
 		m_locationMap.pushBack((char*)obj);
 		return temp;
@@ -220,10 +219,10 @@ inline SmartPointer<T> Pool::allocate(T objectRequired)
 		T *obj = new(start) T();
 		//SmartPointer(ActualWrapper<T>* actual, MemoryManager* m, int l = POOL, int index = 0, bool frontBack = false);
 		ActualWrapper<T> actual(obj);
-		SmartPointer<T> temp(&actual, m_manager, 2, startBlock);
+		SmartPointer<T> temp(&actual, m_manager, 2, startBlock, false);
 
 		m_locationMap.push_back((char*)obj);
-		return 	temp;
+		return temp;
 
 
 
@@ -335,29 +334,4 @@ inline bool Pool::defragGeneric(SmartPointer<T> pointer, int i)
 
 }
 
-void Pool::defragment()
-{
-	//we need to start with each smart pointer,
-	//we get each actual,
-	//then we see if there is a free block before it.
-	//if there is we will try to move it up
-	//we propagate the update by the smart pointers we have access to, use the update actual function...
-	//we will use memmove
-	//we go through the 
-	for (int i = 0; i < m_rawPool.size(); i++)
-	{
-		//we go through the raw pool block by block, find the corrosponding smart pointer
-		//get the size of T and what not and re-assign....
 
-		for (int j = 0; j < m_locationMap.size(); j++)
-		{
-			if (m_rawPool[i].first == m_locationMap[j])
-			{
-				//we need to loop through the list of smart pointers created for this
-			}
-		}
-	}
-
-
-
-}

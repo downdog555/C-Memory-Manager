@@ -43,7 +43,7 @@ private:
 template<typename T, typename... Args>
 inline SmartPointer<T> MemoryManager::Allocate(T type,int storageLocation, bool frontBack, Args... arg)
 {
-	SmartPointer<T> s;
+	
 	if (storageLocation == 0)
 	{
 
@@ -52,18 +52,19 @@ inline SmartPointer<T> MemoryManager::Allocate(T type,int storageLocation, bool 
 	{
 		if (frontBack)
 		{
-			s = m_dbStack.allocateFront(T, arg);
+			//TODO
+			//return m_dbStack.allocateFront(type, arg);
 		}
 		else
 		{
-			s = m_dbStack.allocateBack(T, arg);
+			//return m_dbStack.allocateBack(type, arg);
 		}
 	}
 	else
 	{
-		s = m_pool.allocate(T, arg);
+		return m_pool.allocate(type, arg);
 	}
-	return &s;
+
 }
 template<typename T>
 inline SmartPointer<T> MemoryManager::Allocate(T type,int storageLocation, bool frontBack)

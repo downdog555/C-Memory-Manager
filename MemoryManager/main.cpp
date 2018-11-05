@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <iostream>
 #include "MemoryManager.h"
-#include "SmartPointer.h"
+
 
 //#include "SmartPointer.h"
 struct one 
