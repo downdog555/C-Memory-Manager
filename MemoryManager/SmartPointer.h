@@ -30,7 +30,7 @@ public:
 
 	SmartPointer(const SmartPointer<T>& pointerToCopy);
 
-	SmartPointer<T>& operator= ( SmartPointer<T>& pointerToAssign);
+	SmartPointer<T>& operator= (const SmartPointer<T>& pointerToAssign);
 	bool operator==( SmartPointer<T>& pointer);
 
 	T& operator *();
@@ -147,7 +147,7 @@ inline SmartPointer<T>::SmartPointer(MemoryManager * manager, int loc, Args... a
 	std::cout << "Creation with smart pointer declaration" << std::endl;
 	//we need to request a new smart pointer from the correct cache and what not....
 	T type;
-	this = *manager.Allocate(type,loc, false, args);
+	this = manager.Allocate(type,loc, false, args);
 }template<typename T>
 inline SmartPointer<T>::~SmartPointer()
 {
@@ -157,16 +157,7 @@ inline SmartPointer<T>::~SmartPointer()
 		Deallocate();
 	}
 }
-template<typename T>
-inline SmartPointer<T>::SmartPointer(const SmartPointer<T>& pointerToCopy)
-{
 
-	this->m_p = pointerToCopy.GetCounter();
-
-	this->m_manager = pointerToCopy.GetManager();
-	this->m_locationType = pointerToCopy.GetLocation();
-	this->m_p->increase();
-}
 
 
 
@@ -210,7 +201,7 @@ inline ActualWrapper<T> * SmartPointer<T>::GetActualWrapper()
 
 
 template<typename T>
-inline SmartPointer<T>& SmartPointer<T>::operator=( SmartPointer<T>& pointerToAssign)
+inline SmartPointer<T>& SmartPointer<T>::operator=(const SmartPointer<T>& pointerToAssign)
 {
 	// we do not want to self assign...
 	if (this != &pointerToAssign)
