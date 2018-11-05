@@ -217,8 +217,8 @@ inline SmartPointer<T> Pool::allocate(T objectRequired)
 
 		T *obj = new(start) T();
 		//SmartPointer(ActualWrapper<T>* actual, MemoryManager* m, int l = POOL, int index = 0, bool frontBack = false);
-		ActualWrapper<T>* actual(obj);
-		SmartPointer<T> temp(actual, m_manager, 2, startBlock);
+		ActualWrapper<T> actual(obj);
+		SmartPointer<T> temp(&actual, m_manager, 2, startBlock);
 
 		m_locationMap.push_back((char*)obj);
 		return 	temp;
