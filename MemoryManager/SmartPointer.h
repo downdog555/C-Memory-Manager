@@ -45,7 +45,7 @@ public:
 	void UpdateActual(T* actual);
 	PointerCounter * GetCounter();
 	MemoryManager * GetManager();
-	Location GetLocation();
+	int GetLocation();
 	ActualWrapper<T>* GetActualWrapper();
 	bool m_frontBack;
 private:
@@ -56,7 +56,7 @@ private:
 	
 	MemoryManager * m_manager;
 	//0,1,2 for dif
-	Location m_locationType;
+	int m_locationType;
 	PointerCounter * m_p;
 	int m_index;
 };
@@ -194,7 +194,7 @@ MemoryManager * SmartPointer<T>::GetManager()
 }
 
 template<typename T>
-Location SmartPointer<T>::GetLocation()
+int SmartPointer<T>::GetLocation()
 {
 	return m_locationType;
 }
