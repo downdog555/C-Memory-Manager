@@ -24,7 +24,7 @@ public:
 
 
 	SmartPointer(MemoryManager* manager, int loc = POOL);
-	SmartPointer(ActualWrapper<T>* actual, MemoryManager* m, int l = POOL, int index = 0, bool frontBack = false);
+	SmartPointer(ActualWrapper* actual, MemoryManager* m, int l = POOL, int index = 0, bool frontBack = false);
 	SmartPointer();
 	~SmartPointer();
 
@@ -46,13 +46,13 @@ public:
 	PointerCounter * GetCounter();
 	MemoryManager * GetManager();
 	int GetLocation();
-	ActualWrapper<T>* GetActualWrapper();
+	ActualWrapper* GetActualWrapper();
 	bool m_frontBack;
 private:
 
 	void Deallocate();
 
-	ActualWrapper<T>* m_actualWrapper;
+	ActualWrapper* m_actualWrapper;
 	
 	MemoryManager * m_manager;
 	//0,1,2 for dif
@@ -85,7 +85,7 @@ inline SmartPointer<T>::SmartPointer(MemoryManager * manager, int loc)
 }
 
 template<typename T>
-inline SmartPointer<T>::SmartPointer(ActualWrapper<T>* actual, MemoryManager* m, int l, int index, bool frontBack)
+inline SmartPointer<T>::SmartPointer(ActualWrapper* actual, MemoryManager* m, int l, int index, bool frontBack)
 {
 	m_actualWrapper = actual;
 	m_p = new PointerCounter();
@@ -114,7 +114,7 @@ template<typename T>
 template<typename T>
 inline T & SmartPointer<T>::operator*()
 {
-	T * actual = *m_actualWrapper->GetActual();
+	T * actual = (T*)m_actualWrapper->GetActual();
 	return *actual;
 }
 
@@ -135,7 +135,7 @@ inline T * SmartPointer<T>::GetActual()
 
 
 template<typename T>
-inline void SmartPointer<T>::UpdateActual(T * actual)
+inline void SmartPointer<T>::UpdateActual(char * actual)
 {
 	m_actualWrapper->UpdateActual(actual);
 }
@@ -203,7 +203,7 @@ int SmartPointer<T>::GetLocation()
 	return m_locationType;
 }
 template<typename T>
-inline ActualWrapper<T> * SmartPointer<T>::GetActualWrapper()
+inline ActualWrapper * SmartPointer<T>::GetActualWrapper()
 {
 	return m_actualWrapper;
 }

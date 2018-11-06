@@ -33,6 +33,10 @@ Pool::Pool(char * start, int numberOfBytes, int sizeOfBlocks, MemoryManager* m)
 Pool::~Pool()
 {
 }
+bool Pool::deallocate(char * toRemove)
+{
+	return false;
+}
 /// <summary>
 /// gets the amount of memeory in bytes
 /// </summary>
@@ -66,7 +70,7 @@ void Pool::defragment()
 
 			for (int j = 0; j < m_locationMap.size(); j++)
 			{
-				if (m_rawPool[i].first == m_locationMap[j])
+				if (m_rawPool[i].first == m_locationMap[j].GetActual())
 				{
 					//we need to loop through the list of smart pointers created for this
 				}
