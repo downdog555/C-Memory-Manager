@@ -137,6 +137,8 @@ inline SmartPointer<T> Pool::allocate(T objectRequired, Args... args)
 template<typename T>
 inline SmartPointer<T> Pool::allocate(T objectRequired)
 {
+
+	std::cout << "pool allocate " << std::endl;
 	int numOfBlocksReq;
 	//since we have size of T we knwo how many blocks are required
 	if (sizeof(T) % m_blockSize > 0)
@@ -181,19 +183,19 @@ inline SmartPointer<T> Pool::allocate(T objectRequired)
 					blockCount = 0;
 					continue;
 				}
-
-				if (m_rawPool[block].second == true)
-				{
-					blockCount += 1;
-					continue;
-				}
-
 				if (blockCount == numOfBlocksReq)
 				{
 					//we are done
 					done = true;
 					break;
 				}
+				if (m_rawPool[block].second == true)
+				{
+					blockCount += 1;
+					continue;
+				}
+
+				
 
 			}
 

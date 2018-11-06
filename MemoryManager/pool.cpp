@@ -12,6 +12,7 @@ Pool::Pool()
 /// <param name="sizeOfBlocks">the size of each block in the pool</param>
 Pool::Pool(char * start, int numberOfBytes, int sizeOfBlocks, MemoryManager* m)
 {
+
 	m_start = start;
 	m_end = start + numberOfBytes;
 	m_blockSize = sizeOfBlocks;
@@ -25,6 +26,7 @@ Pool::Pool(char * start, int numberOfBytes, int sizeOfBlocks, MemoryManager* m)
 		std::pair<char*, bool> temp;
 		temp.first = m_start + (i*m_blockSize);
 		temp.second = true;
+		m_rawPool.push_back(temp);
 	}
 }
 

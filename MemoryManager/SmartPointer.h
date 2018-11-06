@@ -67,18 +67,18 @@ private:
 template<typename T>
 inline SmartPointer<T>::SmartPointer(MemoryManager * manager, int loc)
 {
-	std::cout << "Creation with smart pointer declaration" << std::endl;
+	std::cout << "Creation with smart pointer declaration1" << std::endl;
 	//we need to request a new smart pointer from the correct cache and what not....
 	T type{};
 	SmartPointer<T> temp(manager->Allocate(type, loc, false));
 	
-	m_p = temp.GetCounter();
-	m_actualWrapper = temp.GetActualWrapper();
-	m_manager = temp.GetManager();
-	m_locationType = temp.GetLocation();
+	m_p = temp.m_p;
+	m_actualWrapper = temp.m_actualWrapper;
+	m_manager = temp.m_manager;
+	m_locationType = temp.m_locationType;
+	m_index = temp.m_index;
+	m_frontBack = temp.m_frontBack;
 	m_p->increase();
-
-
 
 	
 
@@ -156,6 +156,19 @@ inline SmartPointer<T>::~SmartPointer()
 		//we can send a note to the memeory manager to remove them....
 		Deallocate();
 	}
+}
+
+template<typename T>
+inline SmartPointer<T>::SmartPointer(const SmartPointer<T>& pointerToCopy)
+{
+	m_p = pointerToCopy.m_p;
+	m_actualWrapper = pointerToCopy.m_actualWrapper;
+	m_manager = pointerToCopy.m_manager;
+	m_locationType = pointerToCopy.m_locationType;
+	m_index = pointerToCopy.m_index;
+	m_frontBack = pointerToCopy.m_frontBack;
+	m_p->increase();
+	
 }
 
 

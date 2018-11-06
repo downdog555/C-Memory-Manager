@@ -69,7 +69,7 @@ inline SmartPointer<T> MemoryManager::Allocate(T type,int storageLocation, bool 
 template<typename T>
 inline SmartPointer<T> MemoryManager::Allocate(T type,int storageLocation, bool frontBack)
 {
-	
+	std::cout << "Manage allocate " << std::endl;
 	if (storageLocation == 0)
 	{
 
@@ -87,6 +87,7 @@ inline SmartPointer<T> MemoryManager::Allocate(T type,int storageLocation, bool 
 	}
 	else
 	{
+		std::cout << "Manage allocate POOl" << std::endl;
 		return m_pool.allocate(type);
 	}
 	return NULL;
