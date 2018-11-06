@@ -23,7 +23,7 @@ Pool::Pool(char * start, int numberOfBytes, int sizeOfBlocks, MemoryManager* m)
 	m_rawPool.reserve(m_numberOfBlocks);
 	for (int i = 0; i < m_numberOfBlocks; i++) 
 	{
-		std::pair<char*, bool> temp;
+		std::pair<char*, bool> temp; 
 		temp.first = m_start + (i*m_blockSize);
 		temp.second = true;
 		m_rawPool.push_back(temp);
