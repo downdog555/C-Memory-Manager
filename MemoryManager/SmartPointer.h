@@ -42,11 +42,12 @@ public:
 	char* GetActualComp();
 	int GetIndex();
 
-	void UpdateActual(T* actual);
+
 	PointerCounter * GetCounter();
 	MemoryManager * GetManager();
+	bool GetFrontBack();
 	int GetLocation();
-	ActualWrapper* GetActualWrapper();
+	ActualWrapper*  GetActualWrapper();
 	bool m_frontBack;
 private:
 
@@ -70,17 +71,8 @@ inline SmartPointer<T>::SmartPointer(MemoryManager * manager, int loc)
 	std::cout << "Creation with smart pointer declaration1" << std::endl;
 	//we need to request a new smart pointer from the correct cache and what not....
 	T type{};
-	SmartPointer<T> temp(manager->Allocate(type, loc, false));
-	
-	m_p = temp.m_p;
-	m_actualWrapper = temp.m_actualWrapper;
-	m_manager = temp.m_manager;
-	m_locationType = temp.m_locationType;
-	m_index = temp.m_index;
-	m_frontBack = temp.m_frontBack;
-	m_p->increase();
 
-	
+	*this = SmartPointer<T>(manager->Allocate(type, loc, false));
 
 }
 
@@ -93,7 +85,6 @@ inline SmartPointer<T>::SmartPointer(ActualWrapper* actual, MemoryManager* m, in
 	m_manager = m;
 	m_locationType = l;
 	m_index = index;
-
 	m_frontBack = frontBack;
 }
 
@@ -105,7 +96,9 @@ inline SmartPointer<T>::SmartPointer()
 template<typename T>
  inline void SmartPointer<T>::Deallocate()
 {
-	
+
+	 //raise exception if we cannot dealloc
+	 m_manager->Deallocate(m_actualWrapper,m_locationType,m_frontBack);
 	//we now need to send the message to the manager to deallocate
 	//TODO send message to manager
 	//m_manager->deallocate(m_actual, locationType);
@@ -114,8 +107,9 @@ template<typename T>
 template<typename T>
 inline T & SmartPointer<T>::operator*()
 {
-	T * actual = (T*)m_actualWrapper->GetActual();
-	return *actual;
+
+	
+	return *(T*)m_actualWrapper->GetActual();
 }
 
 template<typename T>
@@ -134,11 +128,7 @@ inline T * SmartPointer<T>::GetActual()
 
 
 
-template<typename T>
-inline void SmartPointer<T>::UpdateActual(char * actual)
-{
-	m_actualWrapper->UpdateActual(actual);
-}
+
 
 template<typename T>
 template<typename ...Args>
@@ -147,15 +137,22 @@ inline SmartPointer<T>::SmartPointer(MemoryManager * manager, int loc, Args... a
 	std::cout << "Creation with smart pointer declaration" << std::endl;
 	//we need to request a new smart pointer from the correct cache and what not....
 	T type{};
-	this = manager.Allocate(type,loc, false, args);
-}template<typename T>
+	this = manager.Allocate(type,loc, false, args...);
+}
+template<typename T>
 inline SmartPointer<T>::~SmartPointer()
 {
-	if (m_p->decrease() == 1)
+	if (m_p->decrease() == 0)
 	{
 		//we can send a note to the memeory manager to remove them....
 		Deallocate();
+		//remove all pointers now
+	
+	//delete m_manager;
+		//delete m_p;
+
 	}
+	
 }
 
 template<typename T>
@@ -198,12 +195,18 @@ MemoryManager * SmartPointer<T>::GetManager()
 }
 
 template<typename T>
+inline bool SmartPointer<T>::GetFrontBack()
+{
+	return m_frontBack;
+}
+
+template<typename T>
 int SmartPointer<T>::GetLocation()
 {
 	return m_locationType;
 }
 template<typename T>
-inline ActualWrapper * SmartPointer<T>::GetActualWrapper()
+inline  ActualWrapper *  SmartPointer<T>::GetActualWrapper()
 {
 	return m_actualWrapper;
 }
@@ -219,19 +222,15 @@ inline SmartPointer<T>& SmartPointer<T>::operator=(const SmartPointer<T>& pointe
 	// we do not want to self assign...
 	if (this != &pointerToAssign)
 	{
-		T* temp = pointerToAssign.GetActual();
-		//we should have 1 refernece left in the pool stack ir double stack
-		if (m_p != NULL && m_p->decrease() == 1)
-		{
+		
+		
 
-			//we can send a note to the memeory manager to remove them....
-			Deallocate();
-		}
-
-		m_p = pointerToAssign.GetCounter();
-		m_actualWrapper = pointerToAssign.GetActualWrapper();
-		m_manager = pointerToAssign.GetManager();
-		m_locationType = pointerToAssign.GetLocation();
+		m_p = pointerToAssign.m_p;
+		m_actualWrapper = pointerToAssign.m_actualWrapper;
+		m_manager = pointerToAssign.m_manager;
+		m_locationType = pointerToAssign.m_locationType;
+		m_index = pointerToAssign.m_index;
+		m_frontBack = pointerToAssign.m_frontBack;
 		m_p->increase();
 
 	}

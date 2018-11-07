@@ -23,14 +23,14 @@ public:
 	template<typename T>
 	SmartPointer<T> Allocate(T type,int storageLocation = 2, bool frontBack = false);
 
-	template<typename T>
-	bool Deallocate(SmartPointer<T> * s);
+	
+	bool Deallocate(ActualWrapper* toRemove, int location, bool frontBack = false);
 
 	~MemoryManager();
 	int GetPoolBlocksLeft();
 	int GetStackBytesLeft();
 	int GetDBStackBytesLeft();
-
+	std::vector<std::string> DisplayPoolAlloc();
 private:
 	Stack m_stack;
 	DoubleStack m_dbStack;
@@ -72,7 +72,7 @@ inline SmartPointer<T> MemoryManager::Allocate(T type,int storageLocation, bool 
 	std::cout << "Manage allocate " << std::endl;
 	if (storageLocation == 0)
 	{
-
+		//return m_stack.allocate(type);
 	}
 	else if (storageLocation == 1)
 	{
@@ -91,29 +91,4 @@ inline SmartPointer<T> MemoryManager::Allocate(T type,int storageLocation, bool 
 		return m_pool.allocate(type);
 	}
 	return NULL;
-}
-template<typename T>
-inline bool MemoryManager::Deallocate(SmartPointer<T> * s)
-{
-	int locationType = s->GetLocation();
-	if (locationType == 0)
-	{
-		m_stack.deallocate(s);
-	}
-	else if (locationType == 1)
-	{
-		if (s->m_frontBack)
-		{
-			return m_dbStack.deallocateFront(s);
-		}
-		else
-		{
-			return m_dbStack.deallocateBack(s);
-		}
-	}
-	else
-	{
-
-		return m_pool.deallocate(s, s->GetActual());
-	}
 }

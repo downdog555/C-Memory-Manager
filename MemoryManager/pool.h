@@ -2,6 +2,7 @@
 #include <vector>
 #include <iostream>
 #include <tuple>
+#include <string>
 #include "SmartPointer.h"
 
 class Pool
@@ -15,9 +16,10 @@ public:
 	template<typename T>
 	SmartPointer<T> allocate(T objectRequired);
 	
-	bool deallocate(char* toRemove);
+	bool deallocate(ActualWrapper* toRemove);
 	int memoryRemaining();
 	int blocksRemaining();
+	std::vector<std::string> DisplayPool();
 private:
 	char* m_start;
 	char* m_end;
@@ -174,7 +176,12 @@ inline SmartPointer<T> Pool::allocate(T objectRequired)
 					blockCount += 1;
 					continue;
 				}
-
+				if (blockCount == numOfBlocksReq)
+				{
+					//we are done
+					done = true;
+					break;
+				}
 				if (m_rawPool[block].second == false)
 				{
 					startloc = NULL;
@@ -182,12 +189,7 @@ inline SmartPointer<T> Pool::allocate(T objectRequired)
 					blockCount = 0;
 					continue;
 				}
-				if (blockCount == numOfBlocksReq)
-				{
-					//we are done
-					done = true;
-					break;
-				}
+				
 				if (m_rawPool[block].second == true)
 				{
 					blockCount += 1;
@@ -209,7 +211,7 @@ inline SmartPointer<T> Pool::allocate(T objectRequired)
 		}
 		//when we have the location and number of blocks we can then assign
 		//we first reserve the blocks then create hte object
-		for (int blocksToReserve = startBlock; blocksToReserve < numOfBlocksReq; blocksToReserve++)
+		for (int blocksToReserve = startBlock; blocksToReserve < startBlock+numOfBlocksReq; blocksToReserve++)
 		{
 			m_rawPool[blocksToReserve].second = false;
 		}
@@ -219,11 +221,13 @@ inline SmartPointer<T> Pool::allocate(T objectRequired)
 
 		T *obj = new(start) T();
 		//SmartPointer(ActualWrapper<T>* actual, MemoryManager* m, int l = POOL, int index = 0, bool frontBack = false);
-		ActualWrapper actual((char*)obj);
-		SmartPointer<T> temp(&actual, m_manager, 2, startBlock, false);
+		ActualWrapper actual(start);
+		//SmartPointer<T> temp(&actual, m_manager, 2, startBlock, false);
 		std::pair<ActualWrapper, int> tempPair(actual, numOfBlocksReq);
+	
 		m_locationMap.push_back(tempPair);
-		return temp;
+		int index = m_locationMap.size() - 1;
+		return SmartPointer<T>(m_locationMap[index].first.GetWrapper(), m_manager, 2, startBlock, false);
 
 
 
@@ -231,43 +235,7 @@ inline SmartPointer<T> Pool::allocate(T objectRequired)
 
 	return NULL;
 }
-template<typename T>
-inline bool Pool::deallocate(SmartPointer<T> * pointer)
-{
-	//we have need to loop through pool map and find the matching char pointer...
-	//remove from the list and then deallocate
-	//using thesecond value as the number of blocks
-	int numberOfBlocks;
-	
-	//since we have size of T we knwo how many blocks are required
-	if (sizeof(T) % m_blockSize > 0)
-	{
-		numberOfBlocks = sizeof(T) / m_blockSize + 1;
-	}
-	else
-	{
-		numberOfBlocks = sizeof(T) / m_blockSize;
-	}
-	int startBlock = *pointer->GetIndex();
-	int endValue = startBlock + numberOfBlocks;
-	for (int blockDealloc = startBlock; blockDealloc < endValue; blockDealloc++)
-	{
-		m_rawPool[blockDealloc].second = true;
-		m_blocksRemaining++;
-	}
-	
 
-	for (std::vector<SmartPointer>::iterator it = m_locationMap.begin(); it != m_locationMap.end(); ++it)
-	{
-		if (*it->GetActual() == *pointer->GetActual()) 
-		{
-			m_locationMap.erase(it);
-			return true;
-			
-		}
-	}
-	return false;
-}
 
 
 

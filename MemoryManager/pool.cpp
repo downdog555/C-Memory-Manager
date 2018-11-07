@@ -33,8 +33,39 @@ Pool::Pool(char * start, int numberOfBytes, int sizeOfBlocks, MemoryManager* m)
 Pool::~Pool()
 {
 }
-bool Pool::deallocate(char * toRemove)
+bool Pool::deallocate(ActualWrapper * toRemove)
 {
+
+	//to dealloc we find need to the char* pair in the location block
+	for (int i = 0; i < m_locationMap.size();i++) 
+	{
+		char * toCompare = m_locationMap[i].first.GetActual();
+		if (toCompare == toRemove->GetActual()) 
+		{
+			//we can now remove it and unlock each one 
+			int sizeOfBlock = m_locationMap[i].second;
+			//we need to find which block it starts at
+			for (int blockIndex =0; blockIndex < m_rawPool.size(); blockIndex++) 
+			{
+				if (m_rawPool[blockIndex].first == toRemove->GetActual()) 
+				{
+					for (int j = blockIndex; j < blockIndex+sizeOfBlock; j++)
+					{
+						//unlock each block
+						m_rawPool[j].second = true;
+
+					}
+					break;
+				}
+			}
+			
+			//add on the freed blocks
+			m_blocksRemaining += sizeOfBlock;
+			//now delete the actual from the list
+			m_locationMap.erase(m_locationMap.begin()+i);
+			return true;
+		}
+	}
 	return false;
 }
 /// <summary>
@@ -53,6 +84,38 @@ int Pool::blocksRemaining()
 {
 	return m_blocksRemaining;
 }
+std::vector<std::string> Pool::DisplayPool()
+{
+	std::vector<std::string> temp;
+
+	//we need to know row size and column
+	int rowSize = 5;
+	std::string s ="";
+	int columnCounter = 0;
+	for (int i =0; i < m_rawPool.size(); i++) 
+	{
+		
+		if (m_rawPool[i].second) 
+		{
+			s = s + "o";
+		}
+		else 
+		{
+			s = s + "x";
+		}
+		columnCounter++;
+		if (columnCounter == rowSize)
+		{
+			columnCounter = 0;
+			temp.push_back(s);
+			s = "";
+		}
+
+
+	}
+
+	return temp;
+}
 void Pool::defragment()
 {
 	
@@ -62,7 +125,7 @@ void Pool::defragment()
 		//if there is we will try to move it up
 		//we propagate the update by the smart pointers we have access to, use the update actual function...
 		//we will use memmove
-		//we go through the 
+		//we go through the raw pool
 		for (int i = 0; i < m_rawPool.size(); i++)
 		{
 			//we go through the raw pool block by block, find the corrosponding smart pointer
@@ -70,9 +133,69 @@ void Pool::defragment()
 
 			for (int j = 0; j < m_locationMap.size(); j++)
 			{
-				if (m_rawPool[i].first == m_locationMap[j].GetActual())
+				if (m_rawPool[i].first == m_locationMap[j].first.GetActual())
 				{
-					//we need to loop through the list of smart pointers created for this
+					//we need to see if we can move up any blocks
+					//if 0 we cannot
+					if (i != 0) 
+					{
+						//we need to see if there are any free blocks before
+						int numOfFreeBlocks = 0;
+						for (int reverseCounter = i-1; reverseCounter > 0; reverseCounter--) 
+						{
+							if (m_rawPool[reverseCounter].second == true) 
+							{
+								numOfFreeBlocks++;
+							}
+							else
+							{
+								break;
+							}
+						}
+
+						int bytesToMoveBy = m_numberOfBlocks * m_blockSize;
+						if (bytesToMoveBy > 0) 
+						{
+							char* newPos = m_locationMap[j].first.GetActual() - bytesToMoveBy;
+							char* old = m_locationMap[j].first.GetActual();
+							int sizeOfObjectInBlocks = m_locationMap[j].second;
+							memmove(newPos, m_locationMap[j].first.GetActual(), m_locationMap[j].second*m_blockSize);
+							//we then need to update actual
+							m_locationMap[j].first.UpdateActual(newPos);
+							//we then need to set the blocks false/true
+							//we can go from new position and set as locked until end of blocks, then set as free till end of old pointer
+							for (int blockFreeingCounter = i - numOfFreeBlocks; blockFreeingCounter < i + sizeOfObjectInBlocks; blockFreeingCounter++)
+							{
+								//if it is not set to false then set to false
+								
+								//we set htem to closed
+								if (blockFreeingCounter < sizeOfObjectInBlocks)
+								{
+									if (m_rawPool[blockFreeingCounter].second == true) 
+									{
+										m_rawPool[blockFreeingCounter].second = false;
+									}
+									
+								}
+								else 
+								{
+									//the rest we  set to open
+									if (m_rawPool[blockFreeingCounter].second == false)
+									{
+										m_rawPool[blockFreeingCounter].second = true;
+									}
+								}
+
+						
+							}
+
+						}
+						else 
+						{
+							continue;
+						}
+
+					}
 				}
 			}
 		}

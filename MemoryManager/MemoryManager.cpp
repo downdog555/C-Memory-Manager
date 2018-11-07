@@ -9,6 +9,32 @@ MemoryManager::MemoryManager(int bytesForStack, int bytesForDBStack, int bytesFo
 	m_pool = Pool(m_memoryStart+bytesForStack+bytesForDBStack, bytesForPool,blockSizePool, this);
 }
 
+bool MemoryManager::Deallocate(ActualWrapper * toRemove, int location, bool frontBack)
+{
+
+	if (location == 0)
+	{
+		m_stack.deallocate(toRemove);
+	}
+	else if (location == 1)
+	{
+		if (frontBack)
+		{
+			return m_dbStack.deallocateFront(toRemove);
+		}
+		else
+		{
+			return m_dbStack.deallocateBack(toRemove);
+		}
+	}
+	else
+	{
+		return m_pool.deallocate(toRemove);
+	}
+}
+
+
+
 MemoryManager::~MemoryManager()
 {
 }
@@ -27,4 +53,9 @@ int MemoryManager::GetStackBytesLeft()
 int MemoryManager::GetDBStackBytesLeft()
 {
 	return m_dbStack.memoryRemaining();
+}
+
+std::vector<std::string> MemoryManager::DisplayPoolAlloc()
+{
+	return m_pool.DisplayPool();
 }

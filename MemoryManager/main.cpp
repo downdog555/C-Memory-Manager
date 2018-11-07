@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <iostream>
+#include <string>
 #include "MemoryManager.h"
 
 
@@ -78,9 +79,45 @@ int main()
 
 	
 	SmartPointer<double> ptr(&manager);
+
+	*ptr = 22.0;
 	std::cout << "number of blocks left pool: " << manager.GetPoolBlocksLeft() << std::endl;
 
+	std::vector<std::string> poolAlloc = manager.DisplayPoolAlloc();
+	for (int i = 0; i < poolAlloc.size(); i++) 
+	{
+		 
+		std::cout << poolAlloc[i] << std::endl;
+	}
 
+
+	SmartPointer<int> ptr2(&manager);
+	*ptr2 = 4;
+	std::cout << "number of blocks left pool: " << manager.GetPoolBlocksLeft() << std::endl;
+	poolAlloc = manager.DisplayPoolAlloc();
+	for (int i = 0; i < poolAlloc.size(); i++)
+	{
+
+		std::cout << poolAlloc[i] << std::endl;
+	}
+
+	SmartPointer<float> ptr3(&manager);
+	*ptr3 = 46.6;
+	std::cout << "number of blocks left pool: " << manager.GetPoolBlocksLeft() << std::endl;
+	 poolAlloc = manager.DisplayPoolAlloc();
+	for (int i = 0; i < poolAlloc.size(); i++)
+	{
+
+		std::cout << poolAlloc[i] << std::endl;
+	}
+	ptr3.~SmartPointer();
+	std::cout << "number of blocks left pool: " << manager.GetPoolBlocksLeft() << std::endl;
+	poolAlloc = manager.DisplayPoolAlloc();
+	for (int i = 0; i < poolAlloc.size(); i++)
+	{
+
+		std::cout << poolAlloc[i] << std::endl;
+	}
 	free(mem2);
 	int i = 0;
 	std::cin >> i;
