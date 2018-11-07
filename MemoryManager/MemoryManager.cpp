@@ -4,8 +4,8 @@ MemoryManager::MemoryManager(int bytesForStack, int bytesForDBStack, int bytesFo
 	int bytesToReserve = bytesForStack + bytesForDBStack + bytesForPool;
 	m_memoryStart = (char*)std::malloc(bytesToReserve);
 	//initialise each storage thing
-	m_stack = Stack(m_memoryStart, bytesForStack);
-	m_dbStack = DoubleStack(m_memoryStart + bytesForStack, bytesForDBStack);
+	m_stack = Stack(m_memoryStart, bytesForStack, this);
+	m_dbStack = DoubleStack(m_memoryStart + bytesForStack, bytesForDBStack, this);
 	m_pool = Pool(m_memoryStart+bytesForStack+bytesForDBStack, bytesForPool,blockSizePool, this);
 }
 
@@ -14,7 +14,7 @@ bool MemoryManager::Deallocate(ActualWrapper * toRemove, int location, bool fron
 
 	if (location == 0)
 	{
-		m_stack.deallocate(toRemove);
+		return m_stack.deallocate(toRemove);
 	}
 	else if (location == 1)
 	{

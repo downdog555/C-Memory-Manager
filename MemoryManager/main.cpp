@@ -35,41 +35,36 @@ private:
 };
 int main() 
 {
-	//we need to reserve memeory
-	void* memory = malloc(16);
-	//we then need to create a stack
-	Stack stackCurrent((char*)memory, 16);
+
+	void* mem2 = malloc(300);
+	MemoryManager manager(100, 100, 100, 10);
 	std::cout << "Size of struct 1 is " << sizeof(one) << std::endl;
 	std::cout << "Size of struct 2 is " << sizeof(two) << std::endl;
-	one a;
-	two b;
-	two* meow2 = stackCurrent.allocate(b);
-
-	std::cout << "Memory Remaing is " << stackCurrent.memoryRemaining() << std::endl;
-	one* meow = stackCurrent.allocate(a);
-	if (meow == NULL)
-	{
-		std::cout << "No Memory Left..." << std::endl;
-	}
-	else 
-	{
-		std::cout << "Memory Remaing is " << stackCurrent.memoryRemaining() << std::endl;
-	}
-
-	if (stackCurrent.deallocate(meow2))
-	{
-		//we have success
-		std::cout << "Deallocation successful" << stackCurrent.memoryRemaining() <<std::endl;
-
-	}
-	else 
-	{
-		std::cout << "error" << std::endl;
-	}
 	
-	free(memory);
-	void* mem2 = malloc(300);
-	MemoryManager manager(100,100,100,10);
+
+	SmartPointer<two> test(&manager,0);
+	std::cout << "Number of bytes left on stack " << manager.GetStackBytesLeft() << std::endl;
+	SmartPointer<two> test1(&manager,0);
+	std::cout << "Number of bytes left on stack " << manager.GetStackBytesLeft() << std::endl;
+	SmartPointer<two> test2(&manager,0);
+	std::cout << "Number of bytes left on stack " << manager.GetStackBytesLeft() << std::endl;
+	SmartPointer<two> test3(&manager,0);
+	std::cout << "Number of bytes left on stack " << manager.GetStackBytesLeft() << std::endl;
+	SmartPointer<two> test4(&manager, 1, true);
+	std::cout << "Number of bytes left db stack " << manager.GetDBStackBytesLeft() << std::endl;
+	SmartPointer<two> test5(&manager, 1, true);
+	std::cout << "Number of bytes left db stack " << manager.GetDBStackBytesLeft() << std::endl;
+	SmartPointer<two> test6(&manager, 1, false);
+	std::cout << "Number of bytes left db stack " << manager.GetDBStackBytesLeft() << std::endl;
+	SmartPointer<two> test7(&manager, 1, false);
+
+	std::cout << "Number of bytes left db stack " << manager.GetDBStackBytesLeft() << std::endl;
+	std::cout << "dealloc tests" << std::endl;
+
+	test7.~SmartPointer();
+	std::cout << "Number of bytes left db stack " << manager.GetDBStackBytesLeft() << std::endl;
+
+
 	std::cout << "number of bytes left stack: " << manager.GetStackBytesLeft() << std::endl;
 	std::cout << "number of bytes left db stack " << manager.GetDBStackBytesLeft() << std::endl;
 	std::cout << "number of blocks left pool: " << manager.GetPoolBlocksLeft() << std::endl;

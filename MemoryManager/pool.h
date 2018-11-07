@@ -123,11 +123,13 @@ inline SmartPointer<T> Pool::allocate(T objectRequired, Args... args)
 		
 		T *obj = new(start) T(args);
 		//SmartPointer(ActualWrapper<T>* actual, MemoryManager* m, int l = POOL, int index = 0, bool frontBack = false);
-		ActualWrapper actual((char*)obj);
-		SmartPointer<T> temp(&actual, m_manager, 2, startBlock, false);
-	
-		m_locationMap.pushBack(actual);
-		return temp;
+		ActualWrapper actual(start);
+		//SmartPointer<T> temp(&actual, m_manager, 2, startBlock, false);
+		std::pair<ActualWrapper, int> tempPair(actual, numOfBlocksReq);
+
+		m_locationMap.push_back(tempPair);
+		int index = m_locationMap.size() - 1;
+		return SmartPointer<T>(m_locationMap[index].first.GetWrapper(), m_manager, 2, startBlock, false);
 
 		
 

@@ -20,10 +20,10 @@ public:
 	/// <param name="manager">the memeory manger in use</param>
 	/// 
 	template<typename... Args>
-	SmartPointer( MemoryManager* manager, int loc = POOL, Args... args);
+	SmartPointer( MemoryManager* manager, int loc = 2, bool frontBack = false, Args... args);
 
 
-	SmartPointer(MemoryManager* manager, int loc = POOL);
+	SmartPointer(MemoryManager* manager, int loc = 2, bool frontBack = false);
 	SmartPointer(ActualWrapper* actual, MemoryManager* m, int l = POOL, int index = 0, bool frontBack = false);
 	SmartPointer();
 	~SmartPointer();
@@ -66,13 +66,13 @@ private:
 
 
 template<typename T>
-inline SmartPointer<T>::SmartPointer(MemoryManager * manager, int loc)
+inline SmartPointer<T>::SmartPointer(MemoryManager * manager, int loc, bool frontBack)
 {
 	std::cout << "Creation with smart pointer declaration1" << std::endl;
 	//we need to request a new smart pointer from the correct cache and what not....
 	T type{};
 
-	*this = SmartPointer<T>(manager->Allocate(type, loc, false));
+	*this = SmartPointer<T>(manager->Allocate(type, loc, frontBack));
 
 }
 
@@ -132,12 +132,12 @@ inline T * SmartPointer<T>::GetActual()
 
 template<typename T>
 template<typename ...Args>
-inline SmartPointer<T>::SmartPointer(MemoryManager * manager, int loc, Args... args)
+inline SmartPointer<T>::SmartPointer(MemoryManager * manager, int loc, bool frontBack,Args... args)
 {
 	std::cout << "Creation with smart pointer declaration" << std::endl;
 	//we need to request a new smart pointer from the correct cache and what not....
 	T type{};
-	this = manager.Allocate(type,loc, false, args...);
+	this = manager.Allocate(type,loc, frontBack, args...);
 }
 template<typename T>
 inline SmartPointer<T>::~SmartPointer()

@@ -7,16 +7,54 @@ Stack::Stack()
 /// </summary>
 /// <param name="numberOfBytes"></param>
 /// <param name="startLocation"></param>
-Stack::Stack(char * startLocation, unsigned const int numberOfBytes)
+Stack::Stack(char * startLocation, unsigned const int numberOfBytes, MemoryManager * m)
 {
 	m_start = startLocation;
 	m_current = startLocation;
 	m_endLocation = startLocation+numberOfBytes;
 	m_sizeOfStack = numberOfBytes;
+	m_manager = m;
 }
 
 Stack::~Stack()
 {
+}
+
+bool Stack::deallocate(ActualWrapper * toRemove)
+{
+	//we need to find how many bytes the object is
+	int size = 0;;
+	int index = 0;
+	char* toFind = toRemove->GetActual();
+	for (int i =0; i < actuals.size(); i++) 
+	{
+		if (toFind == actuals[i].first.GetActual()) 
+		{
+			index = i;
+			size = actuals[i].second;
+			break;
+		}
+	}
+
+
+	if (toFind > m_current)
+	{
+		return false;
+	}
+	if (m_current - size == toFind)
+	{
+		//we need to remove the acutal from the list now 
+		//we can destruct
+		actuals.erase(actuals.begin()+index);
+		//do we need to call the constructor
+		m_current -= size;
+		return true;
+	}
+	else
+	{
+		//we cannot deallocate but we could mark for deallocation.
+		return false;
+	}
 }
 
 int Stack::memoryRemaining()
