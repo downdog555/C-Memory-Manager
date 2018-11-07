@@ -9,6 +9,11 @@ MemoryManager::MemoryManager(int bytesForStack, int bytesForDBStack, int bytesFo
 	m_pool = Pool(m_memoryStart+bytesForStack+bytesForDBStack, bytesForPool,blockSizePool, this);
 }
 
+void MemoryManager::Defrag()
+{
+	m_pool.defragment();
+}
+
 bool MemoryManager::Deallocate(ActualWrapper * toRemove, int location, bool frontBack)
 {
 

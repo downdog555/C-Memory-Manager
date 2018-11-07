@@ -154,7 +154,7 @@ void Pool::defragment()
 							}
 						}
 
-						int bytesToMoveBy = m_numberOfBlocks * m_blockSize;
+						int bytesToMoveBy = numOfFreeBlocks * m_blockSize;
 						if (bytesToMoveBy > 0)
 						{
 							char* newPos = it->first.GetActual() - bytesToMoveBy;
@@ -170,7 +170,7 @@ void Pool::defragment()
 								//if it is not set to false then set to false
 
 								//we set htem to closed
-								if (blockFreeingCounter < sizeOfObjectInBlocks)
+								if (blockFreeingCounter <= sizeOfObjectInBlocks)
 								{
 									if (m_rawPool[blockFreeingCounter].second == true)
 									{

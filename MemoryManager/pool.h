@@ -21,6 +21,7 @@ public:
 	int memoryRemaining();
 	int blocksRemaining();
 	std::vector<std::string> DisplayPool();
+	void defragment();
 private:
 	char* m_start;
 	char* m_end;
@@ -37,7 +38,7 @@ private:
 	//std::vector<std::pair<ActualWrapper, int>> m_locationMap;
 	std::list<std::pair<ActualWrapper, int>> m_locationMap;
 
-	void defragment();
+	
 };
 
 template<typename T, typename... Args>

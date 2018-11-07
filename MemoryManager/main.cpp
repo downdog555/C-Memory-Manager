@@ -114,13 +114,28 @@ int main()
 	std::cout << *ptr << std::endl;
 
 	ptr2.~SmartPointer();
-	std::cout << "number of blocks left pool: a" << manager.GetPoolBlocksLeft() << std::endl;
+	std::cout << "number of blocks left pool: " << manager.GetPoolBlocksLeft() << std::endl;
 	poolAlloc = manager.DisplayPoolAlloc();
 	for (int i = 0; i < poolAlloc.size(); i++)
 	{
 
 		std::cout << poolAlloc[i] << std::endl;
 	}
+
+	std::cout << "Pointer 3 is " << *ptr3 << std::endl;
+	manager.Defrag();
+
+	poolAlloc = manager.DisplayPoolAlloc();
+	for (int i = 0; i < poolAlloc.size(); i++)
+	{
+
+		std::cout << poolAlloc[i] << std::endl;
+	}
+	std::cout << "number of blocks left pool: " << manager.GetPoolBlocksLeft() << std::endl;
+	std::cout << "Pointer 3 is " << *ptr3 << std::endl;
+	*ptr3 = 56.6;
+	std::cout << "Pointer 3 is " << *ptr3 << std::endl;
+
 	free(mem2);
 	int i = 0;
 	std::cin >> i;

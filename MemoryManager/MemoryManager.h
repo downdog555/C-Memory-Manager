@@ -23,7 +23,8 @@ public:
 	template<typename T>
 	SmartPointer<T> Allocate(T type,int storageLocation = 2, bool frontBack = false);
 
-	
+	void Defrag();
+
 	bool Deallocate(ActualWrapper* toRemove, int location, bool frontBack = false);
 
 	~MemoryManager();
