@@ -3,6 +3,7 @@
 #include <iostream>
 #include <tuple>
 #include <string>
+#include <list>
 #include "SmartPointer.h"
 
 class Pool
@@ -33,8 +34,8 @@ private:
 	std::vector<std::pair<char*, bool>> m_rawPool;
 	//char pointer is start, int is number of required blocks second int is block index
 	//we will store just a char pointer to the actual
-	std::vector<std::pair<ActualWrapper, int>> m_locationMap;
-
+	//std::vector<std::pair<ActualWrapper, int>> m_locationMap;
+	std::list<std::pair<ActualWrapper, int>> m_locationMap;
 
 	void defragment();
 };
@@ -42,27 +43,29 @@ private:
 template<typename T, typename... Args>
 inline SmartPointer<T> Pool::allocate(T objectRequired, Args... args)
 {
+
+	std::cout << "pool allocate " << std::endl;
 	int numOfBlocksReq;
 	//since we have size of T we knwo how many blocks are required
 	if (sizeof(T) % m_blockSize > 0)
 	{
 		numOfBlocksReq = sizeof(T) / m_blockSize + 1;
 	}
-	else 
+	else
 	{
 		numOfBlocksReq = sizeof(T) / m_blockSize;
 	}
-	if (blocksRemaining() < numOfBlocksReq) 
+	if (blocksRemaining() < numOfBlocksReq)
 	{
 		return NULL;
 	}
-	else 
+	else
 	{
 		bool done = false;
 		char* startloc;
 		int blockCount;
 		int startBlock;
-		while (!done) 
+		while (!done)
 		{
 			startloc = NULL;
 			blockCount = 0;
@@ -78,7 +81,12 @@ inline SmartPointer<T> Pool::allocate(T objectRequired, Args... args)
 					blockCount += 1;
 					continue;
 				}
-
+				if (blockCount == numOfBlocksReq)
+				{
+					//we are done
+					done = true;
+					break;
+				}
 				if (m_rawPool[block].second == false)
 				{
 					startloc = NULL;
@@ -87,25 +95,20 @@ inline SmartPointer<T> Pool::allocate(T objectRequired, Args... args)
 					continue;
 				}
 
-				if (m_rawPool[block].second == true;)
+				if (m_rawPool[block].second == true)
 				{
 					blockCount += 1;
 					continue;
 				}
 
-				if (blockCount == numOfBlocksReq)
-				{
-					//we are done
-					done = true;
-					break;
-				}
+
 
 			}
 
 			if (done == false)
 			{
 				//we need to defragment
-				defragment();
+				//defragment();
 			}
 
 
@@ -113,28 +116,26 @@ inline SmartPointer<T> Pool::allocate(T objectRequired, Args... args)
 		}
 		//when we have the location and number of blocks we can then assign
 		//we first reserve the blocks then create hte object
-		for (int blocksToReserve = startBlock; blocksToReserve < numOfBlocksReq; blocksToReserve++) 
+		for (int blocksToReserve = startBlock; blocksToReserve < startBlock + numOfBlocksReq; blocksToReserve++)
 		{
 			m_rawPool[blocksToReserve].second = false;
 		}
 		m_blocksRemaining -= numOfBlocksReq;
 		char* start = m_rawPool[startBlock].first;
-		
-		
-		T *obj = new(start) T(args);
+
+
+		T *obj = new(start) T(args...);
 		//SmartPointer(ActualWrapper<T>* actual, MemoryManager* m, int l = POOL, int index = 0, bool frontBack = false);
 		ActualWrapper actual(start);
 		//SmartPointer<T> temp(&actual, m_manager, 2, startBlock, false);
 		std::pair<ActualWrapper, int> tempPair(actual, numOfBlocksReq);
 
-		m_locationMap.push_back(tempPair);
-		int index = m_locationMap.size() - 1;
-		return SmartPointer<T>(m_locationMap[index].first.GetWrapper(), m_manager, 2, startBlock, false);
+		//m_locationMap.push_back(std::pair<ActualWrapper, int>( ActualWrapper(start), numOfBlocksReq));
 
-		
-
+		m_locationMap.emplace_back(ActualWrapper(start), numOfBlocksReq);
+		//return SmartPointer<T>(&m_locationMap[index].first, m_manager, 2, startBlock, false);
+		return SmartPointer<T>(&m_locationMap.back().first, m_manager, 2, startBlock, false);
 	}
-
 	return NULL;
 }
 template<typename T>
@@ -227,9 +228,11 @@ inline SmartPointer<T> Pool::allocate(T objectRequired)
 		//SmartPointer<T> temp(&actual, m_manager, 2, startBlock, false);
 		std::pair<ActualWrapper, int> tempPair(actual, numOfBlocksReq);
 	
-		m_locationMap.push_back(tempPair);
-		int index = m_locationMap.size() - 1;
-		return SmartPointer<T>(m_locationMap[index].first.GetWrapper(), m_manager, 2, startBlock, false);
+		//m_locationMap.push_back(std::pair<ActualWrapper, int>( ActualWrapper(start), numOfBlocksReq));
+		
+		m_locationMap.emplace_back(ActualWrapper(start), numOfBlocksReq);
+		//return SmartPointer<T>(&m_locationMap[index].first, m_manager, 2, startBlock, false);
+		return SmartPointer<T>(&m_locationMap.back().first, m_manager, 2, startBlock, false);
 
 
 

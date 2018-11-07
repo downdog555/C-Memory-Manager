@@ -21,6 +21,7 @@ Pool::Pool(char * start, int numberOfBytes, int sizeOfBlocks, MemoryManager* m)
 	m_numberOfBlocks = numberOfBytes / sizeOfBlocks;
 	m_blocksRemaining = m_numberOfBlocks;
 	m_rawPool.reserve(m_numberOfBlocks);
+	//m_locationMap.reserve(m_numberOfBlocks);
 	for (int i = 0; i < m_numberOfBlocks; i++) 
 	{
 		std::pair<char*, bool> temp; 
@@ -36,20 +37,19 @@ Pool::~Pool()
 bool Pool::deallocate(ActualWrapper * toRemove)
 {
 
-	//to dealloc we find need to the char* pair in the location block
-	for (int i = 0; i < m_locationMap.size();i++) 
+
+	for (std::list<std::pair<ActualWrapper, int>>::iterator it = m_locationMap.begin(); it!= m_locationMap.end(); ++it) 
 	{
-		char * toCompare = m_locationMap[i].first.GetActual();
-		if (toCompare == toRemove->GetActual()) 
+		if (it->first.GetActual() == toRemove->GetActual()) 
 		{
 			//we can now remove it and unlock each one 
-			int sizeOfBlock = m_locationMap[i].second;
+			int sizeOfBlock = it->second;
 			//we need to find which block it starts at
-			for (int blockIndex =0; blockIndex < m_rawPool.size(); blockIndex++) 
+			for (int blockIndex = 0; blockIndex < m_rawPool.size(); blockIndex++)
 			{
-				if (m_rawPool[blockIndex].first == toRemove->GetActual()) 
+				if (m_rawPool[blockIndex].first == toRemove->GetActual())
 				{
-					for (int j = blockIndex; j < blockIndex+sizeOfBlock; j++)
+					for (int j = blockIndex; j < blockIndex + sizeOfBlock; j++)
 					{
 						//unlock each block
 						m_rawPool[j].second = true;
@@ -58,15 +58,17 @@ bool Pool::deallocate(ActualWrapper * toRemove)
 					break;
 				}
 			}
-			
+
 			//add on the freed blocks
 			m_blocksRemaining += sizeOfBlock;
 			//now delete the actual from the list
-			m_locationMap.erase(m_locationMap.begin()+i);
+			m_locationMap.erase(it);
 			return true;
 		}
 	}
 	return false;
+
+
 }
 /// <summary>
 /// gets the amount of memeory in bytes
@@ -130,20 +132,19 @@ void Pool::defragment()
 		{
 			//we go through the raw pool block by block, find the corrosponding smart pointer
 			//get the size of T and what not and re-assign....
-
-			for (int j = 0; j < m_locationMap.size(); j++)
+			for (std::list<std::pair<ActualWrapper, int>>::iterator it = m_locationMap.begin(); it != m_locationMap.end(); ++it) 
 			{
-				if (m_rawPool[i].first == m_locationMap[j].first.GetActual())
+				if (m_rawPool[i].first == it->first.GetActual())
 				{
 					//we need to see if we can move up any blocks
 					//if 0 we cannot
-					if (i != 0) 
+					if (i != 0)
 					{
 						//we need to see if there are any free blocks before
 						int numOfFreeBlocks = 0;
-						for (int reverseCounter = i-1; reverseCounter > 0; reverseCounter--) 
+						for (int reverseCounter = i - 1; reverseCounter > 0; reverseCounter--)
 						{
-							if (m_rawPool[reverseCounter].second == true) 
+							if (m_rawPool[reverseCounter].second == true)
 							{
 								numOfFreeBlocks++;
 							}
@@ -154,30 +155,30 @@ void Pool::defragment()
 						}
 
 						int bytesToMoveBy = m_numberOfBlocks * m_blockSize;
-						if (bytesToMoveBy > 0) 
+						if (bytesToMoveBy > 0)
 						{
-							char* newPos = m_locationMap[j].first.GetActual() - bytesToMoveBy;
-							char* old = m_locationMap[j].first.GetActual();
-							int sizeOfObjectInBlocks = m_locationMap[j].second;
-							memmove(newPos, m_locationMap[j].first.GetActual(), m_locationMap[j].second*m_blockSize);
+							char* newPos = it->first.GetActual() - bytesToMoveBy;
+							char* old = it->first.GetActual();
+							int sizeOfObjectInBlocks = it->second;
+							memmove(newPos, old, it->second*m_blockSize);
 							//we then need to update actual
-							m_locationMap[j].first.UpdateActual(newPos);
+							it->first.UpdateActual(newPos);
 							//we then need to set the blocks false/true
 							//we can go from new position and set as locked until end of blocks, then set as free till end of old pointer
 							for (int blockFreeingCounter = i - numOfFreeBlocks; blockFreeingCounter < i + sizeOfObjectInBlocks; blockFreeingCounter++)
 							{
 								//if it is not set to false then set to false
-								
+
 								//we set htem to closed
 								if (blockFreeingCounter < sizeOfObjectInBlocks)
 								{
-									if (m_rawPool[blockFreeingCounter].second == true) 
+									if (m_rawPool[blockFreeingCounter].second == true)
 									{
 										m_rawPool[blockFreeingCounter].second = false;
 									}
-									
+
 								}
-								else 
+								else
 								{
 									//the rest we  set to open
 									if (m_rawPool[blockFreeingCounter].second == false)
@@ -186,11 +187,11 @@ void Pool::defragment()
 									}
 								}
 
-						
+
 							}
 
 						}
-						else 
+						else
 						{
 							continue;
 						}
@@ -198,6 +199,7 @@ void Pool::defragment()
 					}
 				}
 			}
+			
 		}
 
 

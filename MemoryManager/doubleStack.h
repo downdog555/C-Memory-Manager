@@ -2,6 +2,7 @@
 #include <vector>
 #include "ActualWrapper.h"
 #include <iostream>
+#include <list>
 #include "SmartPointer.h"
 /// <summary>
 /// class representing a double ended stack
@@ -33,7 +34,7 @@ private:
 	char* m_endLocation;
 	int m_sizeOfStack;
 	MemoryManager * m_manager;
-	std::vector<std::pair<ActualWrapper, int>> actuals;
+	std::list<std::pair<ActualWrapper, int>> m_actuals;
 };
 template<typename T, typename... Args>
 /// <summary>
@@ -44,22 +45,17 @@ template<typename T, typename... Args>
 /// <returns>A pointer to the object</returns>
 inline	SmartPointer<T> DoubleStack::allocateFront(T objectRequired, Args... args)
 {
+	//	std::cout << sizeof(T) << std::endl;
 
-	if (m_currentFront + sizeof(T) > m_endLocation)
+	if (m_currentFront + sizeof(T) > m_currentBack)
 	{
 		return NULL;
 	}
 
 	T *obj = new(m_currentFront) T(args...);
+	m_actuals.emplace_back(ActualWrapper(m_currentFront), sizeof(T));
 	m_currentFront += sizeof(T);
-	//SmartPointer(ActualWrapper<T>* actual, MemoryManager* m, int l = POOL, int index = 0, bool frontBack = false);
-	ActualWrapper actual(m_currentFront);
-	//SmartPointer<T> temp(&actual, m_manager, 2, startBlock, false);
-	std::pair<ActualWrapper, int> tempPair(actual, sizeof(T));
-
-	actuals.push_back(tempPair);
-	int index = actuals.size() - 1;
-	return SmartPointer<T>(actuals[index].first.GetWrapper(), m_manager, 1, 0, false);
+	return SmartPointer<T>(&m_actuals.back().first, m_manager, 1, 0, false);
 
 
 }
@@ -70,21 +66,15 @@ inline SmartPointer<T> DoubleStack::allocateFront(T objectRequired)
 
 //	std::cout << sizeof(T) << std::endl;
 
-	if (m_currentFront + sizeof(T) > m_endLocation)
+	if (m_currentFront + sizeof(T) > m_currentBack)
 	{
 		return NULL;
 	}
 
 	T *obj = new(m_currentFront) T();
+	m_actuals.emplace_back(ActualWrapper(m_currentFront), sizeof(T));
 	m_currentFront += sizeof(T);
-	//SmartPointer(ActualWrapper<T>* actual, MemoryManager* m, int l = POOL, int index = 0, bool frontBack = false);
-	ActualWrapper actual(m_currentFront);
-	//SmartPointer<T> temp(&actual, m_manager, 2, startBlock, false);
-	std::pair<ActualWrapper, int> tempPair(actual, sizeof(T));
-
-	actuals.push_back(tempPair);
-	int index = actuals.size() - 1;
-	return SmartPointer<T>(actuals[index].first.GetWrapper(), m_manager, 1, 0, false);
+	return SmartPointer<T>(&m_actuals.back().first, m_manager, 1, 0, false);
 }
 
 
@@ -97,52 +87,40 @@ template<typename T, typename... Args>
 inline SmartPointer<T> DoubleStack::allocateBack(T objectRequired, Args... args)
 {
 
-	if (m_currentBack - sizeof(T) >= m_currentFront)
-	{
-		//we can go back and allocate
+	//std::cout << sizeof(T) << std::endl;
 
-		T *obj = new(m_currentBack - sizeof(T)) T(args...);
-		m_currentBack -= sizeof(T);
-
-		//SmartPointer(ActualWrapper<T>* actual, MemoryManager* m, int l = POOL, int index = 0, bool frontBack = false);
-		ActualWrapper actual(m_currentBack);
-		//SmartPointer<T> temp(&actual, m_manager, 2, startBlock, false);
-		std::pair<ActualWrapper, int> tempPair(actual, sizeof(T));
-
-		actuals.push_back(tempPair);
-		int index = actuals.size() - 1;
-		return SmartPointer<T>(actuals[index].first.GetWrapper(), m_manager, 1, 0, false);
-	}
-	else
+	if (m_currentBack - sizeof(T) < m_currentFront)
 	{
 		return NULL;
 	}
+	m_currentBack -= sizeof(T);
+	T *obj = new(m_currentFront) T(args...);
+
+	//SmartPointer(ActualWrapper<T>* actual, MemoryManager* m, int l = POOL, int index = 0, bool frontBack = false);
+
+	m_actuals.emplace_back(ActualWrapper(m_currentBack), sizeof(T));
+
+	return SmartPointer<T>(&m_actuals.back().first, m_manager, 1, 0, false);
 }
 
 template<typename T>
 inline SmartPointer<T> DoubleStack::allocateBack(T objectRequired)
 {
 
-	if (m_currentBack - sizeof(T) >= m_currentFront)
-	{
-		//we can go back and allocate
+	//std::cout << sizeof(T) << std::endl;
 
-		T *obj = new(m_currentBack - sizeof(T)) T();
-		m_currentBack -= sizeof(T);
-			
-		//SmartPointer(ActualWrapper<T>* actual, MemoryManager* m, int l = POOL, int index = 0, bool frontBack = false);
-		ActualWrapper actual(m_currentBack);
-		//SmartPointer<T> temp(&actual, m_manager, 2, startBlock, false);
-		std::pair<ActualWrapper, int> tempPair(actual, sizeof(T));
-
-		actuals.push_back(tempPair);
-		int index = actuals.size() - 1;
-		return SmartPointer<T>(actuals[index].first.GetWrapper(), m_manager, 1, 0, false);
-	}
-	else
+	if (m_currentBack - sizeof(T) < m_currentFront)
 	{
 		return NULL;
 	}
+	m_currentBack -= sizeof(T);
+	T *obj = new(m_currentFront) T();
+
+	//SmartPointer(ActualWrapper<T>* actual, MemoryManager* m, int l = POOL, int index = 0, bool frontBack = false);
+
+	m_actuals.emplace_back(ActualWrapper(m_currentBack), sizeof(T));
+
+	return SmartPointer<T>(&m_actuals.back().first, m_manager, 1, 0, false);
 
 	
 }

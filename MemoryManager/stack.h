@@ -2,6 +2,7 @@
 #include <vector>
 #include "ActualWrapper.h"
 #include <iostream>
+#include <list>
 #include "SmartPointer.h"
 /// <summary>
 /// class representing a stack, for any object requried
@@ -26,10 +27,10 @@
 		char* m_endLocation;
 		int m_sizeOfStack;
 		MemoryManager* m_manager;
-		std::vector<std::pair<ActualWrapper, int>> actuals;
+		std::list<std::pair<ActualWrapper, int>> m_actuals;
 		//we used void pointers just to let us know where they have been allocated to, so we cna check if that is the nearest one
 		//to deallocate
-		std::vector<void*> allocationLocations;
+		
 	};
 	template<typename T, typename... Args>
 	/// <summary>
@@ -63,9 +64,9 @@
 		//SmartPointer<T> temp(&actual, m_manager, 2, startBlock, false);
 		std::pair<ActualWrapper, int> tempPair(actual, sizeof(T));
 
-		actuals.push_back(tempPair);
-		int index = actuals.size() - 1;
-		return SmartPointer<T>(actuals[index].first.GetWrapper(), m_manager, 0, startBlock, false);
+		m_actuals.emplace_back(ActualWrapper(start), numOfBlocksReq);
+
+		return SmartPointer<T>(m_actuals.back(), m_manager, 0, startBlock, false);
 	}
 
 
@@ -75,7 +76,7 @@
 	inline SmartPointer<T> Stack::allocate(T objectRequired)
 	{
 
-		std::cout << sizeof(T) << std::endl;
+		//std::cout << sizeof(T) << std::endl;
 
 		if (m_current + sizeof(T) > m_endLocation)
 		{
@@ -83,15 +84,14 @@
 		}
 
 		T *obj = new(m_current) T();
-		m_current += sizeof(T);
+		
 		//SmartPointer(ActualWrapper<T>* actual, MemoryManager* m, int l = POOL, int index = 0, bool frontBack = false);
-		ActualWrapper actual(m_current);
-		//SmartPointer<T> temp(&actual, m_manager, 2, startBlock, false);
-		std::pair<ActualWrapper, int> tempPair(actual, sizeof(T));
+	
+		m_actuals.emplace_back(ActualWrapper(m_current), sizeof(T));
+		m_current += sizeof(T);
+		return SmartPointer<T>(&m_actuals.back().first, m_manager, 0, 0, false);
 
-		actuals.push_back(tempPair);
-		int index = actuals.size() - 1;
-		return SmartPointer<T>(actuals[index].first.GetWrapper(), m_manager, 0, 0, false);
+
 	}
 
 

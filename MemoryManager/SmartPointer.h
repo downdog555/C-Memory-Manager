@@ -51,9 +51,9 @@ public:
 	bool m_frontBack;
 private:
 
-	void Deallocate();
+	void Deallocate(ActualWrapper* actual);
 
-	ActualWrapper* m_actualWrapper;
+	ActualWrapper*  m_actualWrapper;
 	
 	MemoryManager * m_manager;
 	//0,1,2 for dif
@@ -77,7 +77,7 @@ inline SmartPointer<T>::SmartPointer(MemoryManager * manager, int loc, bool fron
 }
 
 template<typename T>
-inline SmartPointer<T>::SmartPointer(ActualWrapper* actual, MemoryManager* m, int l, int index, bool frontBack)
+inline SmartPointer<T>::SmartPointer(ActualWrapper* const actual, MemoryManager* m, int l, int index, bool frontBack)
 {
 	m_actualWrapper = actual;
 	m_p = new PointerCounter();
@@ -94,11 +94,12 @@ inline SmartPointer<T>::SmartPointer()
 }
 
 template<typename T>
- inline void SmartPointer<T>::Deallocate()
+ inline void SmartPointer<T>::Deallocate(ActualWrapper * actual)
 {
 
 	 //raise exception if we cannot dealloc
-	 m_manager->Deallocate(m_actualWrapper,m_locationType,m_frontBack);
+	 ActualWrapper * temp = m_actualWrapper;
+	 m_manager->Deallocate(actual,m_locationType,m_frontBack);
 	//we now need to send the message to the manager to deallocate
 	//TODO send message to manager
 	//m_manager->deallocate(m_actual, locationType);
@@ -145,7 +146,7 @@ inline SmartPointer<T>::~SmartPointer()
 	if (m_p->decrease() == 0)
 	{
 		//we can send a note to the memeory manager to remove them....
-		Deallocate();
+		Deallocate(m_actualWrapper);
 		//remove all pointers now
 	
 	//delete m_manager;

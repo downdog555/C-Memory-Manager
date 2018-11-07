@@ -24,40 +24,35 @@ DoubleStack::~DoubleStack()
 }
 bool DoubleStack::deallocateFront(ActualWrapper * toRemove)
 {
-
 	//we need to find how many bytes the object is
 	int size = 0;;
 	int index = 0;
 	char* toFind = toRemove->GetActual();
-	for (int i = 0; i < actuals.size(); i++)
+	for (std::list<std::pair<ActualWrapper, int>>::iterator it = m_actuals.begin(); it != m_actuals.end(); it++)
 	{
-		if (toFind == actuals[i].first.GetActual())
+		size = it->second;
+
+		if (toFind > m_currentFront)
 		{
-			index = i;
-			size = actuals[i].second;
-			break;
+			return false;
+		}
+		if (m_currentFront - size == toFind)
+		{
+			//we need to remove the acutal from the list now 
+			//we can destruct
+			m_actuals.erase(it);
+			//do we need to call the constructor
+			m_currentFront -= size;
+			return true;
+		}
+		else
+		{
+			//we cannot deallocate but we could mark for deallocation.
+			return false;
 		}
 	}
 
-
-	if (toFind > m_currentFront)
-	{
-		return false;
-	}
-	if (m_currentFront - size == toFind)
-	{
-		//we need to remove the acutal from the list now 
-		//we can destruct
-		actuals.erase(actuals.begin() + index);
-		//do we need to call the constructor
-		m_currentFront -= size;
-		return true;
-	}
-	else
-	{
-		//we cannot deallocate but we could mark for deallocation.
-		return false;
-	}
+	return false;
 }
 bool DoubleStack::deallocateBack(ActualWrapper * toRemove)
 {
@@ -66,35 +61,36 @@ bool DoubleStack::deallocateBack(ActualWrapper * toRemove)
 	int size = 0;;
 	int index = 0;
 	char* toFind = toRemove->GetActual();
-	for (int i = 0; i < actuals.size(); i++)
+	for (std::list<std::pair<ActualWrapper, int>>::iterator it = m_actuals.begin(); it != m_actuals.end(); it++)
 	{
-		if (toFind == actuals[i].first.GetActual())
+		size = it->second;
+
+		if (toFind < m_currentBack)
 		{
-			index = i;
-			size = actuals[i].second;
-			break;
+			return false;
+		}
+		if (m_currentBack == toFind)
+		{
+			//we need to remove the acutal from the list now 
+			//we can destruct
+			m_actuals.erase(it);
+			//do we need to call the constructor
+			m_currentBack += size;
+			return true;
+		}
+		else
+		{
+			//we cannot deallocate but we could mark for deallocation.
+			return false;
 		}
 	}
 
+	return false;
 
-	if (toFind < m_currentBack)
-	{
-		return false;
-	}
-	if (m_currentBack == toFind)
-	{
-		//we need to remove the acutal from the list now 
-		//we can destruct
-		actuals.erase(actuals.begin() + index);
-		//do we need to call the constructor
-		m_currentBack += size;
-		return true;
-	}
-	else
-	{
-		//we cannot deallocate but we could mark for deallocation.
-		return false;
-	}
+
+
+
+
 }
 /// <summary>
 /// function to calculate the amount of memeory remaing in bytes

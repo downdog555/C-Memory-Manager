@@ -50,6 +50,9 @@ int main()
 	std::cout << "Number of bytes left on stack " << manager.GetStackBytesLeft() << std::endl;
 	SmartPointer<two> test3(&manager,0);
 	std::cout << "Number of bytes left on stack " << manager.GetStackBytesLeft() << std::endl;
+
+	test3.~SmartPointer();
+	std::cout << "Number of bytes left on stack " << manager.GetStackBytesLeft() << std::endl;
 	SmartPointer<two> test4(&manager, 1, true);
 	std::cout << "Number of bytes left db stack " << manager.GetDBStackBytesLeft() << std::endl;
 	SmartPointer<two> test5(&manager, 1, true);
@@ -63,7 +66,9 @@ int main()
 
 	test7.~SmartPointer();
 	std::cout << "Number of bytes left db stack " << manager.GetDBStackBytesLeft() << std::endl;
-
+	test6.~SmartPointer();
+	
+	std::cout << "Number of bytes left db stack " << manager.GetDBStackBytesLeft() << std::endl;
 
 	std::cout << "number of bytes left stack: " << manager.GetStackBytesLeft() << std::endl;
 	std::cout << "number of bytes left db stack " << manager.GetDBStackBytesLeft() << std::endl;
@@ -87,12 +92,12 @@ int main()
 
 
 	SmartPointer<int> ptr2(&manager);
+
 	*ptr2 = 4;
 	std::cout << "number of blocks left pool: " << manager.GetPoolBlocksLeft() << std::endl;
 	poolAlloc = manager.DisplayPoolAlloc();
 	for (int i = 0; i < poolAlloc.size(); i++)
 	{
-
 		std::cout << poolAlloc[i] << std::endl;
 	}
 
@@ -105,8 +110,11 @@ int main()
 
 		std::cout << poolAlloc[i] << std::endl;
 	}
-	ptr3.~SmartPointer();
-	std::cout << "number of blocks left pool: " << manager.GetPoolBlocksLeft() << std::endl;
+
+	std::cout << *ptr << std::endl;
+
+	ptr2.~SmartPointer();
+	std::cout << "number of blocks left pool: a" << manager.GetPoolBlocksLeft() << std::endl;
 	poolAlloc = manager.DisplayPoolAlloc();
 	for (int i = 0; i < poolAlloc.size(); i++)
 	{
