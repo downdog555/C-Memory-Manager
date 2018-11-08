@@ -42,6 +42,7 @@ bool MemoryManager::Deallocate(ActualWrapper * toRemove, int location, bool fron
 
 MemoryManager::~MemoryManager()
 {
+	free((void*)m_memoryStart);
 }
 
 int MemoryManager::GetPoolBlocksLeft()

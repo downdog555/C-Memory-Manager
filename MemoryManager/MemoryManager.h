@@ -45,26 +45,28 @@ template<typename T, typename... Args>
 inline SmartPointer<T> MemoryManager::Allocate(T type,int storageLocation, bool frontBack, Args... arg)
 {
 	
+	//std::cout << "Manage allocate " << std::endl;
 	if (storageLocation == 0)
 	{
-
+		return m_stack.allocate(type, arg...);
 	}
 	else if (storageLocation == 1)
 	{
 		if (frontBack)
 		{
-			//TODO
-			//return m_dbStack.allocateFront(type, arg);
+			return m_dbStack.allocateFront(type, arg...);
 		}
 		else
 		{
-			//return m_dbStack.allocateBack(type, arg);
+			return m_dbStack.allocateBack(type, arg...);
 		}
 	}
 	else
 	{
-		return m_pool.allocate(type, arg);
+		//	std::cout << "Manage allocate POOl" << std::endl;
+		return m_pool.allocate(type, arg...);
 	}
+	return NULL;
 
 }
 template<typename T>

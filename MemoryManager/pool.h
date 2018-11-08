@@ -45,6 +45,8 @@ template<typename T, typename... Args>
 inline SmartPointer<T> Pool::allocate(T objectRequired, Args... args)
 {
 
+
+
 	std::cout << "pool allocate " << std::endl;
 	int numOfBlocksReq;
 	//since we have size of T we knwo how many blocks are required
@@ -136,7 +138,11 @@ inline SmartPointer<T> Pool::allocate(T objectRequired, Args... args)
 		m_locationMap.emplace_back(ActualWrapper(start), numOfBlocksReq);
 		//return SmartPointer<T>(&m_locationMap[index].first, m_manager, 2, startBlock, false);
 		return SmartPointer<T>(&m_locationMap.back().first, m_manager, 2, startBlock, false);
+
+
+
 	}
+
 	return NULL;
 }
 template<typename T>

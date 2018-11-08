@@ -116,7 +116,7 @@ inline T & SmartPointer<T>::operator*()
 template<typename T>
 inline T * SmartPointer<T>::operator->()
 {
-	T * actual = *m_actualWrapper->GetActual();
+	T * actual = (T*)m_actualWrapper->GetActual();
 	return actual;
 }
 
@@ -135,10 +135,11 @@ template<typename T>
 template<typename ...Args>
 inline SmartPointer<T>::SmartPointer(MemoryManager * manager, int loc, bool frontBack,Args... args)
 {
-	std::cout << "Creation with smart pointer declaration" << std::endl;
+	std::cout << "Creation with smart pointer declaration1" << std::endl;
 	//we need to request a new smart pointer from the correct cache and what not....
 	T type{};
-	this = manager.Allocate(type,loc, frontBack, args...);
+
+	*this = SmartPointer<T>(manager->Allocate(type, loc, frontBack,args...));
 }
 template<typename T>
 inline SmartPointer<T>::~SmartPointer()

@@ -57,7 +57,6 @@ inline	SmartPointer<T> DoubleStack::allocateFront(T objectRequired, Args... args
 	m_currentFront += sizeof(T);
 	return SmartPointer<T>(&m_actuals.back().first, m_manager, 1, 0, false);
 
-
 }
 
 template<typename T>

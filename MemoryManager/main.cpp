@@ -3,6 +3,28 @@
 #include <string>
 #include "MemoryManager.h"
 
+class testMeows 
+{
+public:
+	testMeows();
+	testMeows(int a, int b, int c);
+
+	int m_a;
+	int m_b;
+	int m_c;
+};
+testMeows::testMeows(int a, int b, int c)
+{
+	m_a = a;
+	m_b = b;
+	m_c = c;
+}
+testMeows::testMeows()
+{
+	m_a = 0;
+	m_b = 0;
+	m_c = 0;
+}
 
 //#include "SmartPointer.h"
 struct one 
@@ -36,7 +58,7 @@ private:
 int main() 
 {
 
-	void* mem2 = malloc(300);
+
 	MemoryManager manager(100, 100, 100, 10);
 	std::cout << "Size of struct 1 is " << sizeof(one) << std::endl;
 	std::cout << "Size of struct 2 is " << sizeof(two) << std::endl;
@@ -136,8 +158,14 @@ int main()
 	*ptr3 = 56.6;
 	std::cout << "Pointer 3 is " << *ptr3 << std::endl;
 
-	free(mem2);
+
+	SmartPointer<testMeows> ptrArgs(&manager,2,false,2,4,5);
+	std::cout << ptrArgs->m_a << std::endl;
+	std::cout << ptrArgs->m_b << std::endl;
+	std::cout << ptrArgs->m_c << std::endl;
+	
 	int i = 0;
 	std::cin >> i;
 	return 0;
 }
+

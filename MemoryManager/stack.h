@@ -42,7 +42,7 @@
 	inline	SmartPointer<T> Stack::allocate(T objectRequired, Args... args)
 	{
 
-		std::cout << sizeof(T) << std::endl;
+		//std::cout << sizeof(T) << std::endl;
 
 		if (m_current + sizeof(T) > m_endLocation)
 		{
@@ -50,23 +50,12 @@
 		}
 
 		T *obj = new(m_current) T(args...);
-		m_current += sizeof(T);
-		return obj;
-
-
-
-
-
-
 
 		//SmartPointer(ActualWrapper<T>* actual, MemoryManager* m, int l = POOL, int index = 0, bool frontBack = false);
-		ActualWrapper actual(start);
-		//SmartPointer<T> temp(&actual, m_manager, 2, startBlock, false);
-		std::pair<ActualWrapper, int> tempPair(actual, sizeof(T));
 
-		m_actuals.emplace_back(ActualWrapper(start), numOfBlocksReq);
-
-		return SmartPointer<T>(m_actuals.back(), m_manager, 0, startBlock, false);
+		m_actuals.emplace_back(ActualWrapper(m_current), sizeof(T));
+		m_current += sizeof(T);
+		return SmartPointer<T>(&m_actuals.back().first, m_manager, 0, 0, false);
 	}
 
 
