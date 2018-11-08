@@ -1,13 +1,16 @@
 #include "doubleStack.h"
+/// <summary>
+/// default constructor
+/// </summary>
 DoubleStack::DoubleStack()
 {
 }
 /// <summary>
-/// main constructor
-/// initialises the required counters
+/// Actual Constructor
 /// </summary>
-/// <param name="startLocation">char pointer to the start of the block of reserved memeory</param>
-/// <param name="numberOfBytes">the number of bytes allocated for the stack</param>
+/// <param name="startLocation">start location of this stack</param>
+/// <param name="numberOfBytes">size of this stack</param>
+/// <param name="m">pointer to the memory manager</param>
 DoubleStack::DoubleStack(char * startLocation, unsigned const int numberOfBytes, MemoryManager* m)
 {
 	m_start = startLocation;
@@ -18,10 +21,17 @@ DoubleStack::DoubleStack(char * startLocation, unsigned const int numberOfBytes,
 	m_manager = m;
 }
 
-
+/// <summary>
+/// destructor
+/// </summary>
 DoubleStack::~DoubleStack()
 {
 }
+/// <summary>
+/// deallocates from the front of the stack
+/// </summary>
+/// <param name="toRemove">pointer to the wrapper to be removed</param>
+/// <returns>boolean of success or not</returns>
 bool DoubleStack::deallocateFront(ActualWrapper * toRemove)
 {
 	//we need to find how many bytes the object is
@@ -54,6 +64,11 @@ bool DoubleStack::deallocateFront(ActualWrapper * toRemove)
 
 	return false;
 }
+/// <summary>
+/// deallocates from the back
+/// </summary>
+/// <param name="toRemove">pointer to the wrapper to be removed</param>
+/// <returns>boolean of success</returns>
 bool DoubleStack::deallocateBack(ActualWrapper * toRemove)
 {
 

@@ -1,15 +1,17 @@
 #include "pool.h"
+/// <summary>
+/// default constructor
+/// </summary>
 Pool::Pool()
 {
 }
 /// <summary>
-/// Main constructor
-/// initilises the required data sets
-/// such as raw pool
+/// correct constructor tto use
 /// </summary>
-/// <param name="start">char pointer to the section of memeory reserved by the main memeory manager class</param>
-/// <param name="numberOfBytes">the size of the pool required in bytes</param>
-/// <param name="sizeOfBlocks">the size of each block in the pool</param>
+/// <param name="start">char* to the start location of the pool</param>
+/// <param name="numberOfBytes">number of bytes in the pool</param>
+/// <param name="sizeOfBlocks">size of each block in the pool</param>
+/// <param name="m">pointer to hte memeory manager</param>
 Pool::Pool(char * start, int numberOfBytes, int sizeOfBlocks, MemoryManager* m)
 {
 
@@ -21,7 +23,7 @@ Pool::Pool(char * start, int numberOfBytes, int sizeOfBlocks, MemoryManager* m)
 	m_numberOfBlocks = numberOfBytes / sizeOfBlocks;
 	m_blocksRemaining = m_numberOfBlocks;
 	m_rawPool.reserve(m_numberOfBlocks);
-	//m_locationMap.reserve(m_numberOfBlocks);
+	//initilise blocks 
 	for (int i = 0; i < m_numberOfBlocks; i++) 
 	{
 		std::pair<char*, bool> temp; 
@@ -30,25 +32,37 @@ Pool::Pool(char * start, int numberOfBytes, int sizeOfBlocks, MemoryManager* m)
 		m_rawPool.push_back(temp);
 	}
 }
-
+/// <summary>
+/// destructor
+/// </summary>
 Pool::~Pool()
 {
 }
+/// <summary>
+/// deallocates an object
+/// </summary>
+/// <param name="toRemove">actual wrapper pointer</param>
+/// <returns>boolean of success</returns>
 bool Pool::deallocate(ActualWrapper * toRemove)
 {
 
-
+	//loop through each pair in the location map
 	for (std::list<std::pair<ActualWrapper, int>>::iterator it = m_locationMap.begin(); it!= m_locationMap.end(); ++it) 
 	{
+		//if we find the correct actual
 		if (it->first.GetActual() == toRemove->GetActual()) 
 		{
+			
 			//we can now remove it and unlock each one 
+			//we get the size of block
 			int sizeOfBlock = it->second;
 			//we need to find which block it starts at
 			for (int blockIndex = 0; blockIndex < m_rawPool.size(); blockIndex++)
 			{
+				//means we have found the start block
 				if (m_rawPool[blockIndex].first == toRemove->GetActual())
 				{
+					//unlock until end of num of block
 					for (int j = blockIndex; j < blockIndex + sizeOfBlock; j++)
 					{
 						//unlock each block
@@ -86,6 +100,10 @@ int Pool::blocksRemaining()
 {
 	return m_blocksRemaining;
 }
+/// <summary>
+/// dispalys the pools status
+/// </summary>
+/// <returns>vector of strings representing the current state of the pool</returns>
 std::vector<std::string> Pool::DisplayPool()
 {
 	std::vector<std::string> temp;
@@ -96,7 +114,7 @@ std::vector<std::string> Pool::DisplayPool()
 	int columnCounter = 0;
 	for (int i =0; i < m_rawPool.size(); i++) 
 	{
-		
+		//o for open x for closed
 		if (m_rawPool[i].second) 
 		{
 			s = s + "o";
@@ -118,6 +136,9 @@ std::vector<std::string> Pool::DisplayPool()
 
 	return temp;
 }
+/// <summary>
+/// defragments the pool
+/// </summary>
 void Pool::defragment()
 {
 	
@@ -160,6 +181,7 @@ void Pool::defragment()
 							char* newPos = it->first.GetActual() - bytesToMoveBy;
 							char* old = it->first.GetActual();
 							int sizeOfObjectInBlocks = it->second;
+							//use mememove to move data
 							memmove(newPos, old, it->second*m_blockSize);
 							//we then need to update actual
 							it->first.UpdateActual(newPos);
