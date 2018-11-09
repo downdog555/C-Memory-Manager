@@ -280,10 +280,10 @@ inline SmartPointer<T>::~SmartPointer()
 		//we can send a note to the memeory manager to remove them....
 		Deallocate(m_actualWrapper);
 		//remove all pointers now
-		delete m_actualWrapper;
-		delete m_manager;
-		delete m_manager;
-		delete m_p;
+		//delete m_actualWrapper;
+		//delete m_manager;
+		//delete m_manager;
+		//delete m_p;
 
 	}
 	

@@ -1,5 +1,9 @@
 #include "MemoryManager.h"
 /// <summary>
+/// set instance to null on first creation
+/// </summary>
+MemoryManager* MemoryManager::instance = 0;
+/// <summary>
 /// Constructor
 /// </summary>
 /// <param name="bytesForStack">number of bytes for stack</param>
@@ -14,6 +18,30 @@ MemoryManager::MemoryManager(int bytesForStack, int bytesForDBStack, int bytesFo
 	m_stack = Stack(m_memoryStart, bytesForStack, this);
 	m_dbStack = DoubleStack(m_memoryStart + bytesForStack, bytesForDBStack, this);
 	m_pool = Pool(m_memoryStart+bytesForStack+bytesForDBStack, bytesForPool,blockSizePool, this);
+}
+/// <summary>
+/// blanck get instance to return a copy
+/// </summary>
+/// <returns></returns>
+MemoryManager * MemoryManager::getInstance()
+{
+	return instance;
+}
+/// <summary>
+/// supposed to be used for first intilisation
+/// </summary>
+/// <param name="bytesForStack">bytes required for stack</param>
+/// <param name="bytesForDBStack">bytes requried for double stack</param>
+/// <param name="bytesForPool">bytes rquired for the pool</param>
+/// <param name="blockSizePool">sized of each block in pool</param>
+/// <returns>memeory manager isntance</returns>
+MemoryManager * MemoryManager::getInstance(int bytesForStack, int bytesForDBStack, int bytesForPool, int blockSizePool)
+{
+	if (instance == 0) 
+	{
+		instance = new MemoryManager(bytesForStack, bytesForDBStack, bytesForPool, blockSizePool);
+	}
+	return instance;
 }
 /// <summary>
 /// function call defrag on pool

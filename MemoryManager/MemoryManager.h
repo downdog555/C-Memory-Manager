@@ -10,14 +10,19 @@ class MemoryManager
 {
 public:
 	/// <summary>
-	/// Constructor
+	/// blanck get instance to return a copy
 	/// </summary>
-	/// <param name="bytesForStack">number of bytes for stack</param>
-	/// <param name="bytesForDBStack">number for double stack</param>
-	/// <param name="bytesForPool">number for pool</param>
-	/// <param name="blockSizePool">size of each block in pool</param>
-	MemoryManager(int bytesForStack, int bytesForDBStack, int bytesForPool, int blockSizePool);
-
+	/// <returns></returns>
+	static MemoryManager* getInstance();
+	/// <summary>
+	/// supposed to be used for first intilisation
+	/// </summary>
+	/// <param name="bytesForStack">bytes required for stack</param>
+	/// <param name="bytesForDBStack">bytes requried for double stack</param>
+	/// <param name="bytesForPool">bytes rquired for the pool</param>
+	/// <param name="blockSizePool">sized of each block in pool</param>
+	/// <returns>memeory manager isntance</returns>
+	static MemoryManager* getInstance(int bytesForStack, int bytesForDBStack, int bytesForPool, int blockSizePool);
 	template<typename T, typename... Args>
 	/// <summary>
 	/// allocate fucntion with args for constructor
@@ -76,6 +81,23 @@ public:
 	std::vector<std::string> DisplayPoolAlloc();
 private:
 	/// <summary>
+	/// instace of the memeory manager
+	/// </summary>
+	static MemoryManager* instance;
+
+	MemoryManager(const MemoryManager&);
+	MemoryManager& operator=(const MemoryManager&);
+
+	/// <summary>
+	/// Constructor private for singleton
+	/// </summary>
+	/// <param name="bytesForStack">number of bytes for stack</param>
+	/// <param name="bytesForDBStack">number for double stack</param>
+	/// <param name="bytesForPool">number for pool</param>
+	/// <param name="blockSizePool">size of each block in pool</param>
+	MemoryManager(int bytesForStack, int bytesForDBStack, int bytesForPool, int blockSizePool);
+
+	/// <summary>
 	/// stack ref
 	/// </summary>
 	Stack m_stack;
@@ -92,7 +114,6 @@ private:
 	/// </summary>
 	char* m_memoryStart;
 };
-
 
 
 template<typename T, typename... Args>

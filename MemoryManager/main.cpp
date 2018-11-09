@@ -59,53 +59,54 @@ int main()
 {
 
 
-	MemoryManager manager(100, 100, 100, 10);
-	std::cout << "Size of struct 1 is " << sizeof(one) << std::endl;
+	MemoryManager* manager = MemoryManager::getInstance(100,100,100,10);
+
+		std::cout << "Size of struct 1 is " << sizeof(one) << std::endl;
 	std::cout << "Size of struct 2 is " << sizeof(two) << std::endl;
 	
 
-	SmartPointer<two> test(&manager,0);
-	std::cout << "Number of bytes left on stack " << manager.GetStackBytesLeft() << std::endl;
-	SmartPointer<two> test1(&manager,0);
-	std::cout << "Number of bytes left on stack " << manager.GetStackBytesLeft() << std::endl;
-	SmartPointer<two> test2(&manager,0);
-	std::cout << "Number of bytes left on stack " << manager.GetStackBytesLeft() << std::endl;
-	SmartPointer<two> test3(&manager,0);
-	std::cout << "Number of bytes left on stack " << manager.GetStackBytesLeft() << std::endl;
+	SmartPointer<two> test(manager,0);
+	std::cout << "Number of bytes left on stack " << manager->GetStackBytesLeft() << std::endl;
+	SmartPointer<two> test1(manager,0);
+	std::cout << "Number of bytes left on stack " << manager->GetStackBytesLeft() << std::endl;
+	SmartPointer<two> test2(manager,0);
+	std::cout << "Number of bytes left on stack " << manager->GetStackBytesLeft() << std::endl;
+	SmartPointer<two> test3(manager,0);
+	std::cout << "Number of bytes left on stack " << manager->GetStackBytesLeft() << std::endl;
 
 	test3.~SmartPointer();
-	std::cout << "Number of bytes left on stack " << manager.GetStackBytesLeft() << std::endl;
-	SmartPointer<two> test4(&manager, 1, true);
-	std::cout << "Number of bytes left db stack " << manager.GetDBStackBytesLeft() << std::endl;
-	SmartPointer<two> test5(&manager, 1, true);
-	std::cout << "Number of bytes left db stack " << manager.GetDBStackBytesLeft() << std::endl;
-	SmartPointer<two> test6(&manager, 1, false);
-	std::cout << "Number of bytes left db stack " << manager.GetDBStackBytesLeft() << std::endl;
-	SmartPointer<two> test7(&manager, 1, false);
+	std::cout << "Number of bytes left on stack " << manager->GetStackBytesLeft() << std::endl;
+	SmartPointer<two> test4(manager, 1, true);
+	std::cout << "Number of bytes left db stack " << manager->GetDBStackBytesLeft() << std::endl;
+	SmartPointer<two> test5(manager, 1, true);
+	std::cout << "Number of bytes left db stack " << manager->GetDBStackBytesLeft() << std::endl;
+	SmartPointer<two> test6(manager, 1, false);
+	std::cout << "Number of bytes left db stack " << manager->GetDBStackBytesLeft() << std::endl;
+	SmartPointer<two> test7(manager, 1, false);
 
-	std::cout << "Number of bytes left db stack " << manager.GetDBStackBytesLeft() << std::endl;
+	std::cout << "Number of bytes left db stack " << manager->GetDBStackBytesLeft() << std::endl;
 	std::cout << "dealloc tests" << std::endl;
 
 	test7.~SmartPointer();
-	std::cout << "Number of bytes left db stack " << manager.GetDBStackBytesLeft() << std::endl;
+	std::cout << "Number of bytes left db stack " << manager->GetDBStackBytesLeft() << std::endl;
 	test6.~SmartPointer();
 	
-	std::cout << "Number of bytes left db stack " << manager.GetDBStackBytesLeft() << std::endl;
+	std::cout << "Number of bytes left db stack " << manager->GetDBStackBytesLeft() << std::endl;
 
-	std::cout << "number of bytes left stack: " << manager.GetStackBytesLeft() << std::endl;
-	std::cout << "number of bytes left db stack " << manager.GetDBStackBytesLeft() << std::endl;
-	std::cout << "number of blocks left pool: " << manager.GetPoolBlocksLeft() << std::endl;
+	std::cout << "number of bytes left stack: " << manager->GetStackBytesLeft() << std::endl;
+	std::cout << "number of bytes left db stack " << manager->GetDBStackBytesLeft() << std::endl;
+	std::cout << "number of blocks left pool: " << manager->GetPoolBlocksLeft() << std::endl;
 	
 	//this should default to pool
 	
 
 	
-	SmartPointer<double> ptr(&manager);
+	SmartPointer<double> ptr(manager);
 
 	*ptr = 22.0;
-	std::cout << "number of blocks left pool: " << manager.GetPoolBlocksLeft() << std::endl;
+	std::cout << "number of blocks left pool: " << manager->GetPoolBlocksLeft() << std::endl;
 
-	std::vector<std::string> poolAlloc = manager.DisplayPoolAlloc();
+	std::vector<std::string> poolAlloc = manager->DisplayPoolAlloc();
 	for (int i = 0; i < poolAlloc.size(); i++) 
 	{
 		 
@@ -113,20 +114,20 @@ int main()
 	}
 
 
-	SmartPointer<int> ptr2(&manager);
+	SmartPointer<int> ptr2(manager);
 
 	*ptr2 = 4;
-	std::cout << "number of blocks left pool: " << manager.GetPoolBlocksLeft() << std::endl;
-	poolAlloc = manager.DisplayPoolAlloc();
+	std::cout << "number of blocks left pool: " << manager->GetPoolBlocksLeft() << std::endl;
+	poolAlloc = manager->DisplayPoolAlloc();
 	for (int i = 0; i < poolAlloc.size(); i++)
 	{
 		std::cout << poolAlloc[i] << std::endl;
 	}
 
-	SmartPointer<float> ptr3(&manager);
+	SmartPointer<float> ptr3(manager);
 	*ptr3 = 46.6;
-	std::cout << "number of blocks left pool: " << manager.GetPoolBlocksLeft() << std::endl;
-	 poolAlloc = manager.DisplayPoolAlloc();
+	std::cout << "number of blocks left pool: " << manager->GetPoolBlocksLeft() << std::endl;
+	 poolAlloc = manager->DisplayPoolAlloc();
 	for (int i = 0; i < poolAlloc.size(); i++)
 	{
 
@@ -136,8 +137,8 @@ int main()
 	std::cout << *ptr << std::endl;
 
 	ptr2.~SmartPointer();
-	std::cout << "number of blocks left pool: " << manager.GetPoolBlocksLeft() << std::endl;
-	poolAlloc = manager.DisplayPoolAlloc();
+	std::cout << "number of blocks left pool: " << manager->GetPoolBlocksLeft() << std::endl;
+	poolAlloc = manager->DisplayPoolAlloc();
 	for (int i = 0; i < poolAlloc.size(); i++)
 	{
 
@@ -145,21 +146,21 @@ int main()
 	}
 
 	std::cout << "Pointer 3 is " << *ptr3 << std::endl;
-	manager.Defrag();
+	manager->Defrag();
 
-	poolAlloc = manager.DisplayPoolAlloc();
+	poolAlloc = manager->DisplayPoolAlloc();
 	for (int i = 0; i < poolAlloc.size(); i++)
 	{
 
 		std::cout << poolAlloc[i] << std::endl;
 	}
-	std::cout << "number of blocks left pool: " << manager.GetPoolBlocksLeft() << std::endl;
+	std::cout << "number of blocks left pool: " << manager->GetPoolBlocksLeft() << std::endl;
 	std::cout << "Pointer 3 is " << *ptr3 << std::endl;
 	*ptr3 = 56.6;
 	std::cout << "Pointer 3 is " << *ptr3 << std::endl;
 
 
-	SmartPointer<testMeows> ptrArgs(&manager,2,false,2,4,5);
+	SmartPointer<testMeows> ptrArgs(manager,2,false,2,4,5);
 	std::cout << ptrArgs->m_a << std::endl;
 	std::cout << ptrArgs->m_b << std::endl;
 	std::cout << ptrArgs->m_c << std::endl;
