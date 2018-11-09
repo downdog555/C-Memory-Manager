@@ -81,3 +81,11 @@ int Stack::memoryRemaining()
 	int remaining = m_sizeOfStack - used;
 	return remaining;
 }
+
+void Stack::CheckMemeory()
+{
+	if (memoryRemaining()/m_sizeOfStack < m_sizeOfStack / 4) 
+	{
+		std::cout <<"Memeory of stack is less than 25%" << std::endl;
+	}
+}

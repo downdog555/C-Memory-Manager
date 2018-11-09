@@ -76,6 +76,11 @@ public:
 	int memoryRemaining();
 private:
 	/// <summary>
+	/// Function to chec kmemeory
+	/// </summary>
+	void CheckMemeory();
+
+	/// <summary>
 	/// start of the stack
 	/// </summary>
 	char* m_start;
@@ -125,6 +130,7 @@ inline	SmartPointer<T> DoubleStack::allocateFront(T objectRequired, Args... args
 	m_actuals.emplace_back(ActualWrapper(m_currentFront), sizeof(T));
 	//increment the current front pointer by size of obj
 	m_currentFront += sizeof(T);
+	CheckMemeory();
 	//return a smart pointer
 	return SmartPointer<T>(&m_actuals.back().first, m_manager, 1, 0, false);
 
@@ -151,6 +157,7 @@ inline SmartPointer<T> DoubleStack::allocateFront(T objectRequired)
 	m_actuals.emplace_back(ActualWrapper(m_currentFront), sizeof(T));
 	//increment the current front pointer by size of obj
 	m_currentFront += sizeof(T);
+	CheckMemeory();
 	//return a smart pointer
 	return SmartPointer<T>(&m_actuals.back().first, m_manager, 1, 0, false);
 }
@@ -180,6 +187,7 @@ inline SmartPointer<T> DoubleStack::allocateBack(T objectRequired, Args... args)
 	//SmartPointer(ActualWrapper<T>* actual, MemoryManager* m, int l = POOL, int index = 0, bool frontBack = false);
 	//add and acutal wrapper and size of obj to the list
 	m_actuals.emplace_back(ActualWrapper(m_currentBack), sizeof(T));
+	CheckMemeory();
 	//return the smart pointer
 	return SmartPointer<T>(&m_actuals.back().first, m_manager, 1, 0, false);
 }
@@ -207,6 +215,7 @@ inline SmartPointer<T> DoubleStack::allocateBack(T objectRequired)
 	//SmartPointer(ActualWrapper<T>* actual, MemoryManager* m, int l = POOL, int index = 0, bool frontBack = false);
 	//add and acutal wrapper and size of obj to the list
 	m_actuals.emplace_back(ActualWrapper(m_currentBack), sizeof(T));
+	CheckMemeory();
 	//return the smart pointer
 	return SmartPointer<T>(&m_actuals.back().first, m_manager, 1, 0, false);
 

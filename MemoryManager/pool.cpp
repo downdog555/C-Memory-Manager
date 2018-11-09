@@ -228,3 +228,13 @@ void Pool::defragment()
 
 	
 }
+/// <summary>
+/// function to check memeory
+/// </summary>
+void Pool::CheckMemory()
+{
+	if (m_blocksRemaining/ m_numberOfBlocks < m_numberOfBlocks / 4)
+	{
+		std::cout << "Pool memeory is less than 25% left" << std::endl;
+	}
+}

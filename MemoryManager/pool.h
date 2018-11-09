@@ -98,7 +98,10 @@ private:
 	/// defragging currently active
 	/// </summary>
 	bool m_defragmenting;
-
+	/// <summary>
+	/// function to allert user if memeory is low
+	/// </summary>
+	void CheckMemory();
 	//bool in pair is false for in use, true for free
 	/// <summary>
 	/// vector of a pair of char* and bool, for each block, bool is true if block is free
@@ -227,6 +230,7 @@ inline SmartPointer<T> Pool::allocate(T objectRequired, Args... args)
 		//add to list		
 		m_locationMap.emplace_back(ActualWrapper(start), numOfBlocksReq);
 		//return the smart pointer
+		CheckMemory();
 		return SmartPointer<T>(&m_locationMap.back().first, m_manager, 2, startBlock, false);
 
 
@@ -345,6 +349,7 @@ inline SmartPointer<T> Pool::allocate(T objectRequired)
 	//add to list		
 		m_locationMap.emplace_back(ActualWrapper(start), numOfBlocksReq);
 //return the smart pointer
+		CheckMemory();
 		return SmartPointer<T>(&m_locationMap.back().first, m_manager, 2, startBlock, false);
 
 

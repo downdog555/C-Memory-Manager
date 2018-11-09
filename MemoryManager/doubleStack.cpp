@@ -118,3 +118,11 @@ int DoubleStack::memoryRemaining()
 	int remaining = m_sizeOfStack - usedFront - usedBack;
 	return remaining;
 }
+
+void DoubleStack::CheckMemeory()
+{
+	if (memoryRemaining() / m_sizeOfStack < m_sizeOfStack / 4) 
+	{
+		std::cout << "Double Stack Memory is at less than 25%" << std::endl;
+	}
+}

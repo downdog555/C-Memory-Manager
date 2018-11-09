@@ -57,6 +57,10 @@
 		int memoryRemaining();
 	private:
 		/// <summary>
+		/// function to check amount of memeory remaining
+		/// </summary>
+		void CheckMemeory();
+		/// <summary>
 		/// Start of the stack in memeory
 		/// </summary>
 		char* m_start;
@@ -109,6 +113,7 @@
 		m_actuals.emplace_back(ActualWrapper(m_current), sizeof(T));
 		//increase the current counter
 		m_current += sizeof(T);
+		CheckMemeory();
 		//return a smart pointer of type T
 		return SmartPointer<T>(&m_actuals.back().first, m_manager, 0, 0, false);
 	}
@@ -140,6 +145,7 @@
 		m_actuals.emplace_back(ActualWrapper(m_current), sizeof(T));
 		//increase the current counter
 		m_current += sizeof(T);
+		CheckMemeory();
 		//return a smart pointer of type T
 		return SmartPointer<T>(&m_actuals.back().first, m_manager, 0, 0, false);
 
