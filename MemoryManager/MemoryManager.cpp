@@ -1,4 +1,5 @@
 #include "MemoryManager.h"
+
 /// <summary>
 /// set instance to null on first creation
 /// </summary>
@@ -57,27 +58,32 @@ void MemoryManager::Defrag()
 /// <param name="location">location it is stored</param>
 /// <param name="frontBack">front back bool for dbstack</param>
 /// <returns>bool for success</returns>
-bool MemoryManager::Deallocate(ActualWrapper * toRemove, int location, bool frontBack)
+void MemoryManager::Deallocate(ActualWrapper * toRemove, int location, bool frontBack)
 {
-
+	bool value;
 	if (location == 0)
 	{
-		return m_stack.deallocate(toRemove);
+		value = m_stack.deallocate(toRemove);
 	}
 	else if (location == 1)
 	{
 		if (frontBack)
 		{
-			return m_dbStack.deallocateFront(toRemove);
+			value= m_dbStack.deallocateFront(toRemove);
 		}
 		else
 		{
-			return m_dbStack.deallocateBack(toRemove);
+			value = m_dbStack.deallocateBack(toRemove);
 		}
 	}
 	else
 	{
-		return m_pool.deallocate(toRemove);
+		value = m_pool.deallocate(toRemove);
+	}
+
+	if (!value)
+	{
+		throw DeallocationException();
 	}
 }
 

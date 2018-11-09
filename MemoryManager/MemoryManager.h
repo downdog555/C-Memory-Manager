@@ -4,6 +4,7 @@
 #include "pool.h"
 #include "doubleStack.h"
 #include "SmartPointer.h"
+#include "Exceptions.h"
 
 
 class MemoryManager
@@ -54,7 +55,7 @@ public:
 	/// <param name="location">location it is stored</param>
 	/// <param name="frontBack">front back bool for dbstack</param>
 	/// <returns>bool for success</returns>
-	bool Deallocate(ActualWrapper* toRemove, int location, bool frontBack = false);
+	void Deallocate(ActualWrapper* toRemove, int location, bool frontBack = false);
 	/// <summary>
 	/// destructor
 	/// </summary>
@@ -127,29 +128,36 @@ template<typename T, typename... Args>
 /// <returns>smart pointer of correct type</returns>
 inline SmartPointer<T> MemoryManager::Allocate(T type,int storageLocation, bool frontBack, Args... arg)
 {
-	
+	SmartPointer<T> s;
 	//std::cout << "Manage allocate " << std::endl;
 	if (storageLocation == 0)
 	{
-		return m_stack.allocate(type, arg...);
+		s =  m_stack.allocate(type, arg...);
 	}
 	else if (storageLocation == 1)
 	{
 		if (frontBack)
 		{
-			return m_dbStack.allocateFront(type, arg...);
+			s=  m_dbStack.allocateFront(type, arg...);
 		}
 		else
 		{
-			return m_dbStack.allocateBack(type, arg...);
+			s =  m_dbStack.allocateBack(type, arg...);
 		}
 	}
 	else
 	{
 		//	std::cout << "Manage allocate POOl" << std::endl;
-		return m_pool.allocate(type, arg...);
+		s = m_pool.allocate(type, arg...);
 	}
-	return NULL;
+
+
+	if(s == NULL)
+	{
+		DeallocationException
+		throw AllocationException();
+	}
+	return s;
 
 }
 template<typename T>
@@ -162,26 +170,31 @@ template<typename T>
 /// <returns>smart pointer of correct type</returns>
 inline SmartPointer<T> MemoryManager::Allocate(T type,int storageLocation, bool frontBack)
 {
+	SmartPointer<T> s;
 	//std::cout << "Manage allocate " << std::endl;
 	if (storageLocation == 0)
 	{
-		return m_stack.allocate(type);
+		s =  m_stack.allocate(type);
 	}
 	else if (storageLocation == 1)
 	{
 		if (frontBack)
 		{
-			return m_dbStack.allocateFront(type);
+			s = m_dbStack.allocateFront(type);
 		}
 		else
 		{
-			return m_dbStack.allocateBack(type);
+			s = m_dbStack.allocateBack(type);
 		}
 	}
 	else
 	{
 	//	std::cout << "Manage allocate POOl" << std::endl;
-		return m_pool.allocate(type);
+		s = m_pool.allocate(type);
 	}
-	return NULL;
+	if (s == NULL) 
+	{
+		throw AllocationException();
+	}
+	return s;
 }

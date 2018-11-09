@@ -204,10 +204,8 @@ template<typename T>
 	
 	 //gets actual wrapper 
 	 ActualWrapper * temp = m_actualWrapper;
-	 if (!m_manager->Deallocate(actual, m_locationType, m_frontBack)) 
-	 {
-		 //raise excpetion
-	 }
+	 m_manager->Deallocate(actual, m_locationType, m_frontBack);
+
 	//we now need to send the message to the manager to deallocate
 	//TODO send message to manager
 	//m_manager->deallocate(m_actual, locationType);
